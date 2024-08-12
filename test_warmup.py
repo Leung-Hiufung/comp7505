@@ -26,6 +26,10 @@ def test_main_character():
     assert main_character([7, 1, 2, 7]) == 3
     assert main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
 
+    array = [_ for _ in range(0, 500000000, 100)] + [0]
+    print(main_character(array))
+    assert main_character(array) == 5000000
+
 
 def test_missing_odds():
     """

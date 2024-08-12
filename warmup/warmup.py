@@ -33,6 +33,7 @@ from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList, Node
 
 import math
+from typing import Any
 
 
 def main_character(instring: list[int]) -> int:
@@ -58,15 +59,38 @@ def main_character(instring: list[int]) -> int:
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
 
-    bitvector = BitVector()
-    bitvector.initialise(0, 2**32)
+    # bitvector = BitVector()
+    # bitvector.initialise(0, 2**32)
 
-    for index, num in enumerate(instring):
-        if bitvector.get_at(num) == 0:
-            bitvector.set_at(num)
-        else:
+    # for index, num in enumerate(instring):
+    #     if bitvector.get_at(num) == 0:
+    #         bitvector.set_at(num)
+    #     else:
+    #         return index
+    # return -1
+    bitset = BitSet(1 << 32)
+    for index, value in enumerate(instring):
+        if bitset.contains(value):
             return index
+        bitset.add(value)
+
     return -1
+
+
+class BitSet:
+    def __init__(self, size: int):
+        self.size = size
+        self.bitvector = [0] * (self.size // 64 + 1)  # 每个元素是一个64位的int
+
+    def add(self, value: int) -> None:
+        index = value // 64
+        position = value % 64
+        self.bitvector[index] |= 1 << position
+
+    def contains(self, value: int) -> bool:
+        index = value // 64
+        position = value % 64
+        return (self.bitvector[index] & (1 << position)) != 0
 
 
 def missing_odds(inputs: list[int]) -> int:
@@ -165,13 +189,27 @@ def k_cool(k: int, n: int) -> int:
     # 0000, 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111
     # exactly encodes to binary number 0-15
 
-    addend_amount = int(math.log2(n)) + 1
-    binary_str = f"{(n):0b}"
-    answer = 0
-    for index, char in enumerate(binary_str):
-        bit = 0 if char == "0" else 1
-        answer += bit * k ** (addend_amount - index - 1)
-    return answer % MODULUS
+    # addend_amount = int(math.log2(n)) + 1
+    # binary_str = f"{(n):0b}"
+    # answer = 0
+    # for index, char in enumerate(binary_str):
+    #     bit = 0 if char == "0" else 1
+    #     answer += bit * k ** (addend_amount - index - 1)
+    # return answer % MODULUS
+
+    result = 0
+    power = 1  # power is the result of k^n, initial is k^0 =1
+    while n > 0:
+        # calculate last bit each iteration
+        if n & 1:
+            # if n is odd, then the bit is 1, this power exists, add k^i, 0<=i<max_power
+            result += power
+        # calculate next iteration's result, which is k^(i+1)
+        power *= k
+        # n divided by 2
+        n >>= 1
+
+    return result % MODULUS
 
 
 def number_game(numbers: list[int]) -> tuple[str, int]:
@@ -212,17 +250,28 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     alice = 0
     bob = 0
     is_alice_turn = True
-    array = DynamicArray()
-    array.initialise_from_list(numbers)
-    array.quicksort()
-    array.reverse()
-    for i in range(array.get_size()):
-        num = array.get_at(i)
+    # array = DynamicArray()
+    # array.initialise_from_list(numbers)
+    # array.quicksort()
+    # array.reverse()
+    # for i in range(array.get_size()):
+    #     num = array.get_at(i)
+    #     if is_alice_turn:
+    #         alice += num * ((num + 1) % 2)
+    #     else:
+    #         bob += num * (num % 2)
+    #     is_alice_turn = not is_alice_turn
+    length = binary_length(numbers)
+    quick_sort(numbers, 0, length)
+
+    for i in range(length - 1, -1 - 1):
+        num = numbers[i]
         if is_alice_turn:
             alice += num * ((num + 1) % 2)
         else:
             bob += num * (num % 2)
         is_alice_turn = not is_alice_turn
+
     if alice > bob:
         return ("Alice", alice)
     elif alice < bob:
@@ -260,24 +309,103 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     """
 
     # YOUR CODE GOES HERE
-    array = DynamicArray()
-    array.initialise_from_list(poles)
-    if array.get_size() == 0:
-        return 0
+    # array = DynamicArray()
+    # array.initialise_from_list(poles)
+    # if array.get_size() == 0:
+    #     return 0
 
-    array.quicksort()
+    # array.quicksort()
+
+    # # Ensure the first light covers the start of the road, compare (0, [0])
+    # radius = array.get_at(0)
+
+    # for i in range(array.get_size() - 1):
+    #     # Ensure lights can cover the middle part of the road
+    #     # Compare ([0], [1]), ([1], [2]), ..., ([-2], [-1])
+    #     distance = array.get_at(i + 1) - array.get_at(i)
+    #     if distance / 2 > radius:
+    #         radius = distance / 2
+
+    # # Ensure the final light covers the end of the road, compare (-1, road_length)
+    # distance = road_length - array.get_at(-1)
+    # radius = distance if distance > radius else radius
+    # return radius
+    length = binary_length(poles)
+    quick_sort(poles, 0, length)
 
     # Ensure the first light covers the start of the road, compare (0, [0])
-    radius = array.get_at(0)
+    radius = poles[0]
 
-    for i in range(array.get_size() - 1):
+    for i in range(length - 1):
         # Ensure lights can cover the middle part of the road
         # Compare ([0], [1]), ([1], [2]), ..., ([-2], [-1])
-        distance = array.get_at(i + 1) - array.get_at(i)
+        distance = poles[i + 1] - poles[i]
         if distance / 2 > radius:
             radius = distance / 2
 
     # Ensure the final light covers the end of the road, compare (-1, road_length)
-    distance = road_length - array.get_at(-1)
+    distance = road_length - poles[-1]
     radius = distance if distance > radius else radius
     return radius
+
+
+def quick_sort(array: list[int], low: int, high: int) -> None:
+    """
+    A Quick Sort helper, recursion function.
+    Parameters:
+        low: The start index in the sorting interval, inclusive. (Logically, use get_at())
+        high: The end index in the sorting interval, exclusive. (Logically, use get_at())
+    """
+    pivot = high - 1
+    # Base case:
+    if low >= high:
+        return
+    # Comparison. Let all bigger number move to pivot's right.
+    i = low
+    while i < pivot:
+        while array[i] > array[pivot]:
+            array[i], array[pivot - 1] = array[pivot - 1], array[i]
+            array[pivot - 1], array[pivot] = array[pivot], array[pivot - 1]
+            pivot -= 1
+        i += 1
+    # Recursion. Left part of pivot, and then the right part.
+    quick_sort(array, low, pivot)
+    quick_sort(array, pivot + 1, high)
+
+
+# def swap(array, index1, index2):
+#     """
+#     Swap two values with the given two indexes.
+#     """
+#     temp = array[index1]
+#     array[index1] = array[index2]
+#     array[index2] = temp
+#     set_at(index1, get_at(index2))
+#     set_at(index2, temp)
+def binary_length(array: list[Any]) -> int:
+    """
+    Get the size of an array with the restriction of using len()
+    Using binary search to find the final index of array.
+    Inspiration from Tut W3 Q4.
+    """
+    # Exponential search to find upper limit
+    low = 0
+    high = 1
+    # Double `high` until IndexError occurs
+    while True:
+        try:
+            _ = array[high]
+            high *= 2
+        except IndexError:
+            break
+
+    # Binary search between low and high
+    while low < high:
+        mid = (low + high) // 2
+        try:
+            _ = array[mid]
+            low = mid + 1
+        except IndexError:
+            high = mid
+
+    return low

@@ -182,7 +182,7 @@ class DoublyLinkedList:
         else:
             return self.__pop_from_physical_front().get_data()
 
-    def remove_from_back(self) -> Node | None:
+    def remove_from_back(self) -> Any | None:
         """
         Remove the back node, and return the data it holds.
         Time complexity for full marks: O(1)
@@ -192,11 +192,11 @@ class DoublyLinkedList:
 
         # One node in list, then make list empty
         if self._size == 1:
-            return self.__pop_last_node_from_list()
+            return self.__pop_last_node_from_list().get_data()
         if self._is_reversed:
-            return self.__pop_from_physical_front()
+            return self.__pop_from_physical_front().get_data()
         else:
-            return self.__pop_from_physical_back()
+            return self.__pop_from_physical_back().get_data()
 
     def find_element(self, elem: Any) -> bool:
         """

@@ -41,26 +41,26 @@ class KmerStore:
         k-mers and load them into your data structure.
         """
         with open(infile) as file:
-            sequence_raw = file.read()
+            kmers = file.read().split("\n")
+        num_of_sequences = binary_length(kmers)
+        # length = 0
+        # sequence = ""
+        # for _ in sequence_raw:
+        #     if _ != "\n":
+        #         size += 1
+        #         length += _
 
-        length = 0
-        sequence = ""
-        for _ in sequence_raw:
-            if _ != "\n":
-                size += 1
-                length += _
-
-        num_of_sequences = length - self._k + 1
+        # num_of_sequences = length - self._k + 1
         if num_of_sequences < 1:
             raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
 
-        kmers = [None] * (length - self._k + 1)
+        # kmers = [None] * (length - self._k + 1)
 
-        for index in range(length - self._k + 1):
-            kmer = ""
-            for i in range(self._k):
-                kmer += sequence[index + i]
-            kmers[index] = kmer
+        # for index in range(length - self._k + 1):
+        #     kmer = ""
+        #     for i in range(self._k):
+        #         kmer += sequence[index + i]
+        #     kmers[index] = kmer
 
         self.batch_insert(kmers)
 
@@ -192,13 +192,12 @@ class KmerStore:
     # Any other functionality you may need
 
     def _is_valid_kmer(self, kmer: str) -> bool:
-        count = 0
+        length = binary_length(kmer)
         for char in kmer:
-            if char == "A" or char == "C" or char == "G" or char == "T":
-                count += 1
-            else:
+            if not (char == "A" or char == "C" or char == "G" or char == "T"):
                 return False
-        return count == self._k
+
+        return length == self._k
 
 
 class Node:
@@ -330,9 +329,7 @@ class Trie:
 
     def delete(self, kmer: str) -> None:
         node = self._root
-        length = 0
-        for _ in kmer:
-            length += 1
+        length = binary_length(kmer)
 
         for nucleotide in kmer:
             child = node.get_child(nucleotide)
@@ -357,3 +354,32 @@ class Trie:
             if node is None:
                 # `parent` is root, then node is None
                 break
+
+
+def binary_length(array: list[Any]) -> int:
+    """
+    Get the size of an array with the restriction of using len()
+    Using binary search to find the final index of array.
+    Inspiration from Tut W3 Q4.
+    """
+    # Exponential search to find upper limit
+    low = 0
+    high = 1
+    # Double `high` until IndexError occurs
+    while True:
+        try:
+            _ = array[high]
+            high *= 2
+        except IndexError:
+            break
+
+    # Binary search between low and high
+    while low < high:
+        mid = (low + high) // 2
+        try:
+            _ = array[mid]
+            low = mid + 1
+        except IndexError:
+            high = mid
+
+    return low

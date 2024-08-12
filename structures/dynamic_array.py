@@ -378,26 +378,30 @@ class DynamicArray:
         return python_list
 
 
-def binary_length(arr):
-    # Step 1: Exponential search to find upper limit
+def binary_length(array: list[Any]) -> int:
+    """
+    Get the size of an array with the restriction of using len()
+    Using binary search to find the final index of array.
+    Inspiration from Tut W3 Q4.
+    """
+    # Exponential search to find upper limit
     low = 0
     high = 1
     # Double `high` until IndexError occurs
     while True:
         try:
-            _ = arr[high]
+            _ = array[high]
             high *= 2
         except IndexError:
             break
 
-    # Step 2: Binary search between low and high
+    # Binary search between low and high
     while low < high:
         mid = (low + high) // 2
         try:
-            _ = arr[mid]
+            _ = array[mid]
             low = mid + 1
         except IndexError:
             high = mid
 
-    # After the loop, `low` should point to the first invalid index, hence the length
     return low
