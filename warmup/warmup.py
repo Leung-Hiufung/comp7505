@@ -29,7 +29,7 @@ You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
 from structures.bit_vector import BitVector
-from structures.dynamic_array import DynamicArray, binary_len
+from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList, Node
 
 import math
