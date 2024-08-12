@@ -29,7 +29,7 @@ You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
 from structures.bit_vector import BitVector
-from structures.dynamic_array import DynamicArray
+from structures.dynamic_array import DynamicArray, binary_len
 from structures.linked_list import DoublyLinkedList, Node
 
 import math
@@ -165,10 +165,11 @@ def k_cool(k: int, n: int) -> int:
     # 0000, 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111
     # exactly encodes to binary number 0-15
 
-    addend_amount = math.ceil(math.log2(n - 1))
-    binary_str = f"{(n-1):0b}"
+    addend_amount = int(math.log2(n)) + 1
+    binary_str = f"{(n):0b}"
     answer = 0
-    for index, bit in enumerate(binary_str):
+    for index, char in enumerate(binary_str):
+        bit = 0 if char == "0" else 1
         answer += bit * k ** (addend_amount - index - 1)
     return answer % MODULUS
 

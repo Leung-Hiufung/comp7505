@@ -363,9 +363,7 @@ class DynamicArray:
         self._zero_index = 0
 
     def initialise_from_list(self, array: list[Any]) -> None:
-        size = 0
-        for _ in array:
-            size += 1
+        size = binary_length(array)
         self._array = array
         self._capacity = size
         self._size = size
@@ -378,3 +376,28 @@ class DynamicArray:
             python_list[i] = self.get_at(i)
 
         return python_list
+
+
+def binary_length(arr):
+    # Step 1: Exponential search to find upper limit
+    low = 0
+    high = 1
+    # Double `high` until IndexError occurs
+    while True:
+        try:
+            _ = arr[high]
+            high *= 2
+        except IndexError:
+            break
+
+    # Step 2: Binary search between low and high
+    while low < high:
+        mid = (low + high) // 2
+        try:
+            _ = arr[mid]
+            low = mid + 1
+        except IndexError:
+            high = mid
+
+    # After the loop, `low` should point to the first invalid index, hence the length
+    return low
