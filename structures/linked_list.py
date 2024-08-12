@@ -46,10 +46,10 @@ class DoublyLinkedList:
 
     def __init__(self) -> None:
         # You probably need to track some data here...
-        self.size = 0
-        self.head = None
-        self.tail = None
-        self.is_reversed = False
+        self._size = 0
+        self._head = None
+        self._tail = None
+        self._is_reversed = False
 
     def __str__(self) -> str:
         """
@@ -57,20 +57,20 @@ class DoublyLinkedList:
         via the str() method.
         """
         elements = []
-        if self.size > 0:
-            elements = [None] * self.size
-            if not self.is_reversed:
-                node = self.head
-                for i in range(self.size):
+        if self._size > 0:
+            elements = [None] * self._size
+            if not self._is_reversed:
+                node = self._head
+                for i in range(self._size):
                     elements[i] = node.get_data()
                     node = node.get_next()
             else:
-                node = self.tail
-                for i in range(self.size):
+                node = self._tail
+                for i in range(self._size):
                     elements[i] = node.get_data()
                     node = node.get_prev()
 
-        return f"DoublyLinkedList({self.size}): {elements}"
+        return f"DoublyLinkedList({self._size}): {elements}"
 
     """
     Simple Getters and Setters below
@@ -81,14 +81,16 @@ class DoublyLinkedList:
         Return the size of the list.
         Time complexity for full marks: O(1)
         """
-        return self.size
+        return self._size
 
     def get_head(self) -> Any | None:
         """
         Return the data of the leftmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        return self.head.get_data() if not self.is_reversed else self.tail.get_data()
+        if self._size == 0:
+            return
+        return self._head.get_data() if not self._is_reversed else self._tail.get_data()
 
     def set_head(self, data: Any) -> None:
         """
@@ -96,19 +98,21 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self.size == 0:
+        if self._size == 0:
             return
-        if self.is_reversed:
-            self.tail.set_data(data)
+        if self._is_reversed:
+            self._tail.set_data(data)
         else:
-            self.head.set_data(data)
+            self._head.set_data(data)
 
     def get_tail(self) -> Any | None:
         """
         Return the data of the rightmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        return self.tail.get_data() if not self.is_reversed else self.head.get_data()
+        if self._size == 0:
+            return
+        return self._tail.get_data() if not self._is_reversed else self._head.get_data()
 
     def set_tail(self, data: Any) -> None:
         """
@@ -116,13 +120,13 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self.size == 0:
+        if self._size == 0:
             return
 
-        if self.is_reversed:
-            self.head.set_data(data)
+        if self._is_reversed:
+            self._head.set_data(data)
         else:
-            self.tail.set_data(data)
+            self._tail.set_data(data)
 
     """
     More interesting functionality now.
@@ -137,11 +141,11 @@ class DoublyLinkedList:
         """
         node = Node(data)
 
-        if self.size == 0:
+        if self._size == 0:
             self.__insert_into_empty_list(node)
             return
 
-        if self.is_reversed:
+        if self._is_reversed:
             self.__insert_to_physical_back(node)
         else:
             self.__insert_to_physical_front(node)
@@ -153,11 +157,11 @@ class DoublyLinkedList:
         """
         node = Node(data)
 
-        if self.size == 0:
+        if self._size == 0:
             self.__insert_into_empty_list(node)
             return
 
-        if self.is_reversed:
+        if self._is_reversed:
             self.__insert_to_physical_front(node)
         else:
             self.__insert_to_physical_back(node)
@@ -167,34 +171,32 @@ class DoublyLinkedList:
         Remove the front node, and return the data it holds.
         Time complexity for full marks: O(1)
         """
-        if self.size == 0:
+        if self._size == 0:
             return
 
         # One node in list, then make list empty
-        if self.size == 1:
-            self.__pop_last_node_from_list().get_data()
-            return
-        if self.is_reversed:
-            self.__pop_from_physical_back().get_data()
+        if self._size == 1:
+            return self.__pop_last_node_from_list().get_data()
+        if self._is_reversed:
+            return self.__pop_from_physical_back().get_data()
         else:
-            self.__pop_from_physical_front().get_data()
+            return self.__pop_from_physical_front().get_data()
 
     def remove_from_back(self) -> Node | None:
         """
         Remove the back node, and return the data it holds.
         Time complexity for full marks: O(1)
         """
-        if self.size == 0:
+        if self._size == 0:
             return
 
         # One node in list, then make list empty
-        if self.size == 1:
-            self.__pop_last_node_from_list()
-            return
-        if self.is_reversed:
-            self.__pop_from_physical_front()
+        if self._size == 1:
+            return self.__pop_last_node_from_list()
+        if self._is_reversed:
+            return self.__pop_from_physical_front()
         else:
-            self.__pop_from_physical_back()
+            return self.__pop_from_physical_back()
 
     def find_element(self, elem: Any) -> bool:
         """
@@ -202,10 +204,10 @@ class DoublyLinkedList:
         if a match is found; False otherwise.
         Time complexity for full marks: O(N)
         """
-        if self.size == 0:
-            return
+        if self._size == 0:
+            return False
 
-        node = self.head
+        node = self._head
 
         # iterate the list
         while True:
@@ -224,10 +226,10 @@ class DoublyLinkedList:
         False is returned if no match is found.
         Time complexity for full marks: O(N)
         """
-        if self.size == 0:
-            return
+        if self._size == 0:
+            return False
 
-        node = self.head
+        node = self._head
         # iterate the list
         while True:
             if node.get_data() == elem:
@@ -239,17 +241,17 @@ class DoublyLinkedList:
                 return False
 
         # Also contain the condition of len==1, (len==2 and the node is head)
-        if self.head == node:
+        if self._head == node:
             self.remove_from_front()
         # Also contain the condition of len>=2 and the node is tail
-        elif self.tail == node:
+        elif self._tail == node:
             self.remove_from_back()
         else:
             prev_node = node.get_prev()
             next_node = node.get_next()
             prev_node.set_next(next_node)
             next_node.set_prev(prev_node)
-            self.size -= 1
+            self._size -= 1
         return True
 
     def reverse(self) -> None:
@@ -257,26 +259,26 @@ class DoublyLinkedList:
         Reverses the linked list
         Time complexity for full marks: O(1)
         """
-        self.is_reversed = not self.is_reversed
+        self._is_reversed = not self._is_reversed
 
     def __insert_into_empty_list(self, node: Node) -> None:
         """
         Helper function. Used to insert the first node into an empty linked list.
         Premise: List is empty, i.e. size == 0
         """
-        self.head = node
-        self.tail = node
-        self.size += 1
+        self._head = node
+        self._tail = node
+        self._size += 1
 
     def __pop_last_node_from_list(self) -> Node:
         """
         Helper function. Used to remove the last node from a linked list.
         Premise: List has only one node, i.e. size == 1
         """
-        node = self.head
-        self.head = None
-        self.tail = None
-        self.size -= 1
+        node = self._head
+        self._head = None
+        self._tail = None
+        self._size -= 1
         return node
 
     def __insert_to_physical_front(self, node: Node) -> None:
@@ -284,20 +286,20 @@ class DoublyLinkedList:
         Insert a node to the front of the list when not reversed
         Premise: List is not empty. `node` is not None.
         """
-        node.set_next(self.head)
-        self.head.get_prev(node)
-        self.head = node
-        self.size += 1
+        node.set_next(self._head)
+        self._head.set_prev(node)
+        self._head = node
+        self._size += 1
 
     def __insert_to_physical_back(self, node: Node) -> None:
         """
         Insert a node to the back of the list when not reversed
         Premise: List is not empty. `node` is not None.
         """
-        node.set_prev(self.tail)
-        self.tail.set_next(node)
-        self.tail = node
-        self.size += 1
+        node.set_prev(self._tail)
+        self._tail.set_next(node)
+        self._tail = node
+        self._size += 1
 
     def __pop_from_physical_front(self) -> Node | None:
         """
@@ -305,10 +307,10 @@ class DoublyLinkedList:
         Premises:
             List size > 1
         """
-        node = self.head
-        self.head = self.head.get_next()
-        self.head.set_prev(None)
-        self.size -= 1
+        node = self._head
+        self._head = self._head.get_next()
+        self._head.set_prev(None)
+        self._size -= 1
         return node
 
     def __pop_from_physical_back(self) -> Node | None:
@@ -317,8 +319,8 @@ class DoublyLinkedList:
         Premises:
             List size > 1
         """
-        node = self.tail
-        self.tail = self.tail.get_prev()
-        self.tail.set_next(None)
-        self.size -= 1
+        node = self._tail
+        self._tail = self._tail.get_prev()
+        self._tail.set_next(None)
+        self._size -= 1
         return node

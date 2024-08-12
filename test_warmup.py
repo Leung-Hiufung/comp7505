@@ -34,6 +34,7 @@ def test_missing_odds():
     """
     assert missing_odds([1, 2]) == 0
     assert missing_odds([1, 3]) == 0
+    print(missing_odds([1, 4]))
     assert missing_odds([1, 4]) == 3
     assert missing_odds([4, 1]) == 3
     assert missing_odds([4, 1, 8, 5]) == 10  # 3 and 7 are missing
@@ -47,8 +48,8 @@ def test_k_cool():
     assert k_cool(2, 1) == 1  # The first 2-cool number is 2^0 = 1
     assert k_cool(2, 3) == 3  # The third 2-cool number is 2^1 + 2^0 = 3
     assert k_cool(3, 5) == 10  # The fifth 3-cool number is 3^2 + 3^0 = 10
-    assert k_cool(10, 42) == 100010000
-    print(k_cool(128, 5000))
+    assert k_cool(10, 42) == 101010
+    assert k_cool(128, 5000) == 9826529652304384
     # The actual result is larger than 10^16 + 61,
     # so k_cool returns the remainder of division by 10^16 + 61
 
@@ -58,6 +59,9 @@ def test_number_game():
     A simple set of tests for the number game problem.
     This is not marked and is just here for you to test your code.
     """
+    assert number_game([5, 2, 7, 3]) == ("Bob", 5)
+    assert number_game([3, 2, 1, 0]) == ("Tie", 0)
+    assert number_game([2, 2, 2, 2]) == ("Alice", 4)
 
 
 def test_road_illumination():
@@ -139,7 +143,7 @@ def test_road_illumination():
     ), "Test 20 Failed"
 
 
-sys.argv = ["test_warmup.py", "--kcool"]
+sys.argv = ["test_warmup.py", "--numbergame"]
 # The actual program we're running here
 if __name__ == "__main__":
     # Get and parse the command line arguments

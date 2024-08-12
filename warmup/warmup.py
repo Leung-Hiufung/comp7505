@@ -98,26 +98,35 @@ def missing_odds(inputs: list[int]) -> int:
     # YOUR CODE GOES HERE
     minimum = inputs[0]
     maximum = inputs[0]
+    sum_odd_in_array = 0
 
     # find max and min
     for num in inputs:
         if num < minimum:
+            # Get the max
             minimum = num
         if num > maximum:
+            # Get the min
             maximum = num
+        if num % 2 == 1:
+            # Add all odd numbers in array to `sum`
+            sum_odd_in_array += num
 
     # Let interval collapse to "both sides are odd"
     if maximum % 2 == 0:
-        maximum -= 1
+        maximum += 1
+        sum_odd_in_array += maximum
     if minimum % 2 == 0:
-        minimum += 1
+        minimum -= 1
+        sum_odd_in_array += minimum
 
     # Case 1: No odd number in the interval
     if maximum - minimum <= 2:
         return 0
 
-    # Case 2: Add all odd numbers in the interval (exclusive)
-    return (maximum**2 - minimum**2 + 2 * (minimum + maximum)) // 4
+    # Case 2: Add all odd numbers in the interval (inclusive)
+    sum_odd_sequence = (maximum**2 - minimum**2 + 2 * (minimum + maximum)) // 4
+    return sum_odd_sequence - sum_odd_in_array
 
 
 def k_cool(k: int, n: int) -> int:
@@ -148,29 +157,19 @@ def k_cool(k: int, n: int) -> int:
 
     MODULUS = 10**16 + 61
 
-    # YOUR CODE GOES HERE
-    # power_1 = -1
-    # i = 0
-    # while i < n:
-    #     power_1 += 1
-    #     for power_2 in range(-1, power_1):
-    #         i += 1
-    #         if i == n:
-    #             break
+    # Use Mathematical approach,
+    # From small to large, take n=1~16 as example, each digit in number indicate the addends' powers
+    # 0, 1, 10, 2, 20, 21, 210, 3, 30, 31, 310, 32, 320, 321, 3210.
+    # Use binary to encode the number, 1 means occur, 0 mean absence
+    # **** each digit stands for the existence of the power (3,2,1,0)
+    # 0000, 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111
+    # exactly encodes to binary number 0-15
 
-    # Use Mathematical approach, (power1, power2), * means None.
-    # From small to large
-    # (0, *),
-    # (1, *), (1, 0),
-    # (2, *), (2, 0), (2, 1),
-    #  ...,
-    # (p1, *), (p1, 0), (p1, 1) ..., (p1, p1-1)
-    # Arithmetic Squence, (p1, p1-1) should be the n-th one, where n = (p1+2)*(p1+1)/2
-    # If n is given, n is between (p1, *) and (p1, p1-1), then p1 = floor(-1.5+sqrt(5*n+1)/2)
-    power1 = math.ceil(-1.5 + math.sqrt(8 * n + 1) / 2)
-    power2 = n - (power1 + 1) * power1 // 2 - 2
-
-    answer = k**power1 if power2 == -1 else k**power1 + k**power2
+    addend_amount = math.ceil(math.log2(n - 1))
+    binary_str = f"{(n-1):0b}"
+    answer = 0
+    for index, bit in enumerate(binary_str):
+        answer += bit * k ** (addend_amount - index - 1)
     return answer % MODULUS
 
 
@@ -209,7 +208,26 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     """
 
     # YOUR CODE GOES HERE
-    pass
+    alice = 0
+    bob = 0
+    is_alice_turn = True
+    array = DynamicArray()
+    array.initialise_from_list(numbers)
+    array.quicksort()
+    array.reverse()
+    for i in range(array.get_size()):
+        num = array.get_at(i)
+        if is_alice_turn:
+            alice += num * ((num + 1) % 2)
+        else:
+            bob += num * (num % 2)
+        is_alice_turn = not is_alice_turn
+    if alice > bob:
+        return ("Alice", alice)
+    elif alice < bob:
+        return ("Bob", bob)
+    else:
+        return ("Tie", alice)
 
 
 def road_illumination(road_length: int, poles: list[int]) -> float:
@@ -246,7 +264,7 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     if array.get_size() == 0:
         return 0
 
-    array.sort()
+    array.quicksort()
 
     # Ensure the first light covers the start of the road, compare (0, [0])
     radius = array.get_at(0)

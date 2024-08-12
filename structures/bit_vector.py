@@ -363,8 +363,8 @@ class BitVector:
             self._data.remove_at(0)
 
         if self._size == 0:
-            self._leftmost_index_in_elem = 0
-            self._rightmost_index_in_elem = 0
+            self._leftmost_index_in_elem = None
+            self._rightmost_index_in_elem = None
 
         return bit
 
@@ -382,8 +382,8 @@ class BitVector:
             self._data.remove_at(-1)
 
         if self._size == 0:
-            self._leftmost_index_in_elem = 0
-            self._rightmost_index_in_elem = 0
+            self._leftmost_index_in_elem = None
+            self._rightmost_index_in_elem = None
 
         return bit
 

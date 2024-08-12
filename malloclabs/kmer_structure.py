@@ -28,7 +28,7 @@ class KmerStore:
     At any moment, the structure is maintaining n distinct k-mers.
     """
 
-    NUCLEOTIDES = ["A", "C", "G", "T"]
+    NUCLEOTIDES = "ACGT"
 
     def __init__(self, k: int) -> None:
         self._k = k
@@ -295,7 +295,7 @@ class Node:
 
 
 class Trie:
-    NUCLEOTIDES = ["A", "C", "G", "T"]
+    NUCLEOTIDES = "ACGT"
 
     def __init__(self) -> None:
         self._root = Node()

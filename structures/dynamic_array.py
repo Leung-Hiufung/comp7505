@@ -75,7 +75,10 @@ class DynamicArray:
             if self._is_reversed
             else index + self._zero_index
         )
-        return self._array[real_index]
+        try:
+            return self._array[real_index]
+        except IndexError:
+            return None
 
     def set_at(self, index: int, element: Any) -> None:
         """
@@ -258,6 +261,9 @@ class DynamicArray:
         for i in range(self._size):
             self.set_at(i, sorted_array.get_at(i))
         # self._quick_sort_helper(0, self._size)
+
+    def quicksort(self) -> None:
+        self._quick_sort_helper(0, self._size)
 
     def _merge_sort_helper(self, front_index: int, rear_index: int) -> Any:
         """
