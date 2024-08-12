@@ -147,7 +147,7 @@ def test_road_illumination():
     ), "Test 20 Failed"
 
 
-sys.argv = ["test_warmup.py", "--numbergame"]
+sys.argv = ["test_warmup.py", "--kcool"]
 # The actual program we're running here
 if __name__ == "__main__":
     # Get and parse the command line arguments
