@@ -264,7 +264,7 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     length = binary_length(numbers)
     quick_sort(numbers, 0, length)
 
-    for i in range(length - 1, -1 - 1):
+    for i in range(length - 1, -1, -1):
         num = numbers[i]
         if is_alice_turn:
             alice += num * ((num + 1) % 2)
