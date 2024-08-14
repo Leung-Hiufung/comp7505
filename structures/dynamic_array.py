@@ -139,15 +139,15 @@ class DynamicArray:
         if self._size == 0:
             self._zero_index = 1
 
+        self._size += 1
+
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
         # self._set_at_no_bound(self._size, element)
 
-        self._size += 1
-
         if self._is_reversed:
             self._zero_index -= 1
-        self.set_at(-1, element)
+        self[-1] = element
 
     def prepend(self, element: Any) -> None:
         """
@@ -158,10 +158,10 @@ class DynamicArray:
             self.append(element)
             return
 
+        self._size += 1
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
         # self._set_at_no_bound(-1, element)
-        self._size += 1
 
         if not self._is_reversed:
             self._zero_index -= 1
@@ -204,22 +204,22 @@ class DynamicArray:
         If there is no such element, leave the array unchanged and return None.
         Time complexity for full marks: O(N)
         """
-        if self.get_at(index) is None:
+        if self[index] is None:
             return
-        element = self.get_at(index)
+        element = self[index]
 
         if index == 0 or index == -self._size:
             # Remove the first element, O(1)
-            self.set_at(0, None)
+            self[0] = None
             self._zero_index += 1
         elif index == self._size - 1 or index == -1:
             # Remove the back element, O(1)
-            self.set_at(-1, None)
+            self[-1] = None
         else:
             # Remove other elements, O(N)
             index = self._size + index if index < 0 else index
             for i in range(index, self._size - 1):
-                self.set_at(i, self.get_at(i + 1))
+                self[i] = self[i + 1]
         self._size -= 1
 
         if self._size == 0:

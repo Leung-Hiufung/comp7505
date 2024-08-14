@@ -202,6 +202,11 @@ def test_dynamic_array():
     assert str(array) == "[0, 0, 1, 2, 4, 4, 6, 7, 9]"
     print(array)
 
+    print("Remove index 2")
+    array.remove_at(567)
+    print(array)
+    assert str(array) == "[0, 0, 1, 2, 4, 4, 6, 7, 9]"
+
 
 def test_bitvector():
     """
@@ -214,8 +219,6 @@ def test_bitvector():
     # Test 1: Append single bit
     print("Append 1")
     bitvector.append(1)
-    print(bitvector[0])
-    print(bitvector[1])
     assert bitvector[0] == 1
     print(bitvector)  # Expect: '1'
 
@@ -458,7 +461,8 @@ def test_bitvector():
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]
-sys.argv = ["test_structures.py", "--bitvector"]
+sys.argv = ["test_structures.py", "--dynamicarray"]
+# sys.argv = ["test_structures.py", "--bitvector"]
 
 # The actual program we're running here
 if __name__ == "__main__":

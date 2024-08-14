@@ -65,6 +65,8 @@ class KmerStore:
             kmers[index] = kmer
 
         self.batch_insert(kmers)
+        # for _ in kmers:
+        #     print(_)
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
@@ -293,6 +295,24 @@ class Node:
             return 3
         else:
             raise ValueError
+
+    # def __eq__(self, other: Node) -> bool:
+    #     return self._nucleotide == other.get_data()
+
+    # def __ne__(self, other: Node) -> bool:
+    #     return self._nucleotide != other.get_data()
+
+    # def __gt__(self, other: Node) -> bool:
+    #     return self._nucleotide > other.get_data()
+
+    # def __ge__(self, other: Node) -> bool:
+    #     return self._nucleotide >= other.get_data()
+
+    # def __lt__(self, other: Node) -> bool:
+    #     return self._nucleotide < other.get_data()
+
+    # def __le__(self, other: Node) -> bool:
+    #     return self._nucleotide <= other.get_data()
 
 
 class Trie:

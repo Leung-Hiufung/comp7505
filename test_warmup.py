@@ -67,6 +67,7 @@ def test_number_game():
     assert number_game([5, 2, 7, 3]) == ("Bob", 5)
     assert number_game([3, 2, 1, 0]) == ("Tie", 0)
     assert number_game([2, 2, 2, 2]) == ("Alice", 4)
+    print(number_game([3, 1, 6, 2, 4, 7, 1, 1]))
 
 
 def test_road_illumination():
@@ -148,8 +149,8 @@ def test_road_illumination():
     ), "Test 20 Failed"
 
 
-sys.argv = ["test_warmup.py", "--kcool"]
-# sys.argv = ["test_warmup.py", "--numbergame"]
+# sys.argv = ["test_warmup.py", "--kcool"]
+sys.argv = ["test_warmup.py", "--numbergame"]
 # The actual program we're running here
 if __name__ == "__main__":
     # Get and parse the command line arguments
