@@ -33,8 +33,8 @@ def test_linked_list():
     my_list = DoublyLinkedList()
     assert my_list.get_size() == 0
 
-    my_list.insert_to_front(Node("hello"))
-    my_list.insert_to_back(Node("algorithms"))
+    my_list.insert_to_front("hello")
+    my_list.insert_to_back("algorithms")
 
     # Have a look - we can do this due to overriding __str__ in the class
     print(str(my_list))
@@ -42,19 +42,19 @@ def test_linked_list():
     # Now lets try to find a node
     elem = my_list.find_element("algorithms")
     if elem is not None:
-        print("Found node with data = ", elem.get_data())
+        print("Found node with data? ", elem)
 
     # And try to delete one
     elem = my_list.find_and_remove_element("1337")
     if elem is not None:
-        print("Deleted ", elem.get_data())
+        print("Deleted ", elem)
     else:
         print("Didn't find element = 1337")
 
     # And try to delete another one
     elem = my_list.find_and_remove_element("hello")
     if elem is not None:
-        print("Deleted ", elem.get_data())
+        print("Deleted ", elem)
     else:
         print("Didn't find element = world")
 
@@ -454,6 +454,7 @@ def test_bitvector():
     print(ones_vector)  # Expect: '111111111111111
 
 
+# sys.argv = ["test_structures.py", "--linkedlist"]
 sys.argv = ["test_structures.py", "--bitvector"]
 
 # The actual program we're running here

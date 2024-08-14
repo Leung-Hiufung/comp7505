@@ -102,6 +102,14 @@ class BitVector:
     def __resize(self) -> None:
         pass
 
+    def _get_real_index(self, index: int) -> int | None:
+        if -self._size <= index < 0:
+            return self._size + index if not self._is_reversed else -1 - index
+        elif 0 <= index < self._size:
+            return index if not self._is_reversed else self._size - 1 - index
+        else:
+            return None
+
     def get_at(self, index: int) -> int | None:
         """
         Get bit at the given index.
@@ -109,29 +117,26 @@ class BitVector:
         Time complexity for full marks: O(1)
         """
 
-        if -self._size <= index < 0:
-            real_index = self._size + index if not self._is_reversed else -1 - index
-        elif 0 <= index < self._size:
-            real_index = index if not self._is_reversed else self._size - 1 - index
-        else:
-            return None
-        bit = self.__getitem__(real_index)
-        return bit ^ 1 if self._is_flipped else bit
+        real_index = self._get_real_index(index)
+        if real_index is None:
+            return
+        # bit = self.__getitem__(real_index)
+        positions = self._get_position_in_array(real_index)
+        index_in_array = positions[0]
+        index_in_elem = positions[1]
+        bit = f"{self._data.get_at(index_in_array):0{self.BITS_PER_ELEMENT}b}"[
+            index_in_elem
+        ]
+        bit = 1 if bit == "1" else 0
+        bit = bit ^ 1 if self._is_flipped else bit
+        return bit
 
     def __getitem__(self, index: int) -> int | None:
         """
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        positions = self._get_position_in_array(index)
-        index_in_array = positions[0]
-        index_in_elem = positions[1]
-        bit = f"{self._data.get_at(index_in_array):0{self.BITS_PER_ELEMENT}b}"[
-            index_in_elem
-        ]
-
-        # Get the bit
-        return 1 if bit == "1" else 0
+        return self.set_at(index)
 
     def set_at(self, index: int) -> None:
         """
@@ -139,13 +144,10 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if -self._size <= index < 0:
-            real_index = self._size + index if not self._is_reversed else -1 - index
-        elif 0 <= index < self._size:
-            real_index = index if not self._is_reversed else self._size - 1 - index
-        else:
-            return None
-        self.__setitem__(real_index, 1 if not self._is_flipped else 0)
+        real_index = self._get_real_index(index)
+        if real_index is None:
+            return
+        self._set_status(real_index, 1 if not self._is_flipped else 0)
 
     def unset_at(self, index: int) -> None:
         """
@@ -153,13 +155,28 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if -self._size <= index < 0:
-            real_index = self._size + index if not self._is_reversed else -1 - index
-        elif 0 <= index < self._size:
-            real_index = index if not self._is_reversed else self._size - 1 - index
+        real_index = self._get_real_index(index)
+        if real_index is None:
+            return
+        self._set_status(real_index, 0 if not self._is_flipped else 1)
+
+    def _set_status(self, index: int, state: int) -> None:
+        real_index = self._get_real_index(index)
+        if real_index is None:
+            return
+
+        positions = self._get_position_in_array(index)
+        index_in_array = positions[0]
+        index_in_elem = positions[1]
+        target_element = self._data[index_in_array]
+
+        mask = 1 << (self.BITS_PER_ELEMENT - index_in_elem - 1)
+        if state == 0:
+            new_element = target_element & ~mask
         else:
-            return None
-        self.__setitem__(real_index, 0 if not self._is_flipped else 1)
+            new_element = target_element | mask
+
+        self._data[index_in_array] = new_element
 
     def __setitem__(self, index: int, state: int) -> None:
         """
@@ -169,18 +186,10 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        positions = self._get_position_in_array(index)
-        index_in_array = positions[0]
-        index_in_elem = positions[1]
-        target_element = self._data.get_at(index_in_array)
-
-        mask = 1 << (self.BITS_PER_ELEMENT - index_in_elem - 1)
         if state == 0:
-            new_element = target_element & ~mask
+            self.set_at(index)
         else:
-            new_element = target_element | mask
-
-        self._data.set_at(index_in_array, new_element)
+            self.unset_at(index)
 
     def append(self, state: int) -> None:
         """

@@ -49,36 +49,61 @@ class DynamicArray:
         self._capacity = new_capacity
         self._zero_index = new_zero_index
 
+    def _get_real_index(self, index: int) -> int | None:
+        if 0 <= index < self._size:
+            # self._set_at_no_bound(index, element)
+            index = index
+        elif -self._size <= index < 0:
+            # return self._set_at_no_bound(self._size + index, element)
+            index = self._size + index
+        else:
+            return None
+
+        if self._is_reversed:
+            index = self._zero_index + self._size - index - 1
+        else:
+            index += self._zero_index
+        return index
+
     def get_at(self, index: int) -> Any | None:
         """
         Get element at the given index.
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if self._size == 0:
-            return
+        real_index = self._get_real_index(index)
 
-        if 0 <= index < self._size:
-            return self.__getitem__(index)
-        elif -self._size <= index < 0:
-            return self.__getitem__(self._size + index)
+        if real_index is None:
+            return
         else:
-            return None
+            return self._array[real_index]
+        # try:
+        #     return self._array[real_index]
+        # except IndexError:
+        #     return None
+
+        # if 0 <= index < self._size:
+        #     return self.__getitem__(index)
+        # elif -self._size <= index < 0:
+        #     return self.__getitem__(self._size + index)
+        # else:
+        #     return None
 
     def __getitem__(self, index: int) -> Any | None:
         """
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        real_index = (
-            self._zero_index + self._size - index - 1
-            if self._is_reversed
-            else index + self._zero_index
-        )
-        try:
-            return self._array[real_index]
-        except IndexError:
-            return None
+        # real_index = (
+        #     self._zero_index + self._size - index - 1
+        #     if self._is_reversed
+        #     else index + self._zero_index
+        # )
+        # try:
+        #     return self._array[real_index]
+        # except IndexError:
+        #     return None
+        return self.get_at(index)
 
     def set_at(self, index: int, element: Any) -> None:
         """
@@ -86,27 +111,25 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if self._size == 0:
+        real_index = self._get_real_index(index)
+        if real_index is None:
             return
-
-        if 0 <= index < self._size:
-            self.__setitem__(index, element)
-        elif -self._size <= index < 0:
-            return self.__setitem__(self._size + index, element)
         else:
-            return None
+            self._array[real_index] = element
 
     def __setitem__(self, index: int, element: Any) -> None:
         """
         Same as set_at.
         Allows to use square brackets to index elements.
         """
-        real_index = (
-            self._zero_index + self._size - index - 1
-            if self._is_reversed
-            else index + self._zero_index
-        )
-        self._array[real_index] = element
+        self.set_at(index, element)
+
+    # def _set_at_no_bound(self, index: int, element: Any) -> None:
+    #     if self._is_reversed:
+    #         real_index = self._zero_index + self._size - index - 1
+    #     else:
+    #         real_index = index + self._zero_index
+    #     self._array[real_index] = element
 
     def append(self, element: Any) -> None:
         """
@@ -118,12 +141,13 @@ class DynamicArray:
 
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
-        self.__setitem__(self._size, element)
+        # self._set_at_no_bound(self._size, element)
 
         self._size += 1
 
         if self._is_reversed:
             self._zero_index -= 1
+        self.set_at(-1, element)
 
     def prepend(self, element: Any) -> None:
         """
@@ -136,11 +160,13 @@ class DynamicArray:
 
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
-        self.__setitem__(-1, element)
+        # self._set_at_no_bound(-1, element)
         self._size += 1
 
         if not self._is_reversed:
             self._zero_index -= 1
+
+        self.set_at(0, element)
 
     def reverse(self) -> None:
         """
@@ -164,7 +190,7 @@ class DynamicArray:
         if not is_found:
             return
         for i in range(target_index, self._size + 1):
-            self.__setitem__(i, self.get_at(i + 1))
+            self.set_at(i, self.get_at(i + 1))
         self._size -= 1
 
         if self._size == 0:
@@ -259,33 +285,33 @@ class DynamicArray:
         # Change to merge sort
         sorted_array = self._merge_sort_helper(0, self._size)
         for i in range(self._size):
-            self.set_at(i, sorted_array.get_at(i))
+            self.set_at(i, sorted_array[i])
         # self._quick_sort_helper(0, self._size)
 
     def quicksort(self) -> None:
         self._quick_sort_helper(0, self._size)
 
-    def _merge_sort_helper(self, front_index: int, rear_index: int) -> Any:
+    def _merge_sort_helper(self, low: int, high: int) -> Any:
         """
         A Merge Sort helper, recursion function.
         Parameters:
-            front_index: The start index in the sorting interval, inclusive. (Logically, use get_at())
-            rear_index: The end index in the sorting interval, exclusive. (Logically, use get_at())
+            low: The start index in the sorting interval, inclusive. (Logically, use get_at())
+            high: The end index in the sorting interval, exclusive. (Logically, use get_at())
         """
         # Base Case
         # No number in sub-array
-        if rear_index <= front_index:
+        if high <= low:
             return DynamicArray()
         # One number in sub-array
-        if rear_index - front_index == 1:
+        if high - low == 1:
             sub_array = DynamicArray()
-            sub_array.append(self.get_at(front_index))
+            sub_array.append(self.get_at(low))
             return sub_array
         # Two numbers in sub-array
-        if rear_index - front_index == 2:
+        if high - low == 2:
             sub_array = DynamicArray()
-            num_1 = self.get_at(front_index)
-            num_2 = self.get_at(front_index + 1)
+            num_1 = self.get_at(low)
+            num_2 = self.get_at(low + 1)
             sub_array.append(num_1)
             if num_2 < num_1:
                 sub_array.prepend(num_2)
@@ -293,18 +319,20 @@ class DynamicArray:
                 sub_array.append(num_2)
             return sub_array
 
-        # Recursion, get sorted left_half part and right_half part
-        middle_index = (front_index + rear_index) // 2
-        left_half = self._merge_sort_helper(front_index, middle_index)
-        right_half = self._merge_sort_helper(middle_index, rear_index)
+        # Recursion, get sorted left_sorted part and right_sorted part
+        middle_index = (low + high) // 2
+        left_sorted = self._merge_sort_helper(low, middle_index)
+        right_sorted = self._merge_sort_helper(middle_index, high)
 
-        # Merge Sort left_half and right_half
+        # Merge Sort left_sorted and right_sorted
         sorted_subarray = DynamicArray()
         left_flag = 0
         right_flag = 0
-        while left_flag < left_half.get_size() and right_flag < right_half.get_size():
-            left_num = left_half.get_at(left_flag)
-            right_num = right_half.get_at(right_flag)
+        while (
+            left_flag < left_sorted.get_size() and right_flag < right_sorted.get_size()
+        ):
+            left_num = left_sorted[left_flag]
+            right_num = right_sorted[right_flag]
             if left_num < right_num:
                 sorted_subarray.append(left_num)
                 left_flag += 1
@@ -313,44 +341,44 @@ class DynamicArray:
                 right_flag += 1
 
         # Merge the remaining numbers
-        if left_flag == left_half.get_size():
-            for i in range(right_flag, right_half.get_size()):
-                sorted_subarray.append(right_half.get_at(i))
+        if left_flag == left_sorted.get_size():
+            for i in range(right_flag, right_sorted.get_size()):
+                sorted_subarray.append(right_sorted[i])
         else:
-            for i in range(left_flag, left_half.get_size()):
-                sorted_subarray.append(left_half.get_at(i))
+            for i in range(left_flag, left_sorted.get_size()):
+                sorted_subarray.append(left_sorted[i])
         return sorted_subarray
 
-    def _quick_sort_helper(self, start_index: int, end_index: int) -> None:
+    def _quick_sort_helper(self, low: int, high: int) -> None:
         """
         A Quick Sort helper, recursion function.
         Parameters:
-            start_index: The start index in the sorting interval, inclusive. (Logically, use get_at())
-            end_index: The end index in the sorting interval, exclusive. (Logically, use get_at())
+            low: The start index in the sorting interval, inclusive. (Logically, use get_at())
+            high: The end index in the sorting interval, exclusive. (Logically, use get_at())
         """
-        pivot_index = end_index - 1
+        pivot = high - 1
         # Base case:
-        if start_index >= end_index:
+        if low >= high:
             return
         # Comparison. Let all bigger number move to pivot's right.
-        i = start_index
-        while i < pivot_index:
-            while self.get_at(i) > self.get_at(pivot_index):
-                self.swap(i, pivot_index - 1)
-                self.swap(pivot_index - 1, pivot_index)
-                pivot_index -= 1
+        i = low
+        while i < pivot:
+            while self[i] > self[pivot]:
+                self.swap(i, pivot - 1)
+                self.swap(pivot - 1, pivot)
+                pivot -= 1
             i += 1
         # Recursion. Left part of pivot, and then the right part.
-        self._quick_sort_helper(start_index, pivot_index)
-        self._quick_sort_helper(pivot_index + 1, end_index)
+        self._quick_sort_helper(low, pivot)
+        self._quick_sort_helper(pivot + 1, high)
 
     def swap(self, index1, index2):
         """
         Swap two values with the given two indexes.
         """
-        temp = self.get_at(index1)
-        self.set_at(index1, self.get_at(index2))
-        self.set_at(index2, temp)
+        temp = self[index1]
+        self[index1] = self[index2]
+        self[index2] = temp
 
     def get_physical_array(self) -> list[Any]:
         return self._array
@@ -373,7 +401,7 @@ class DynamicArray:
     def to_python_list(self) -> list[Any]:
         python_list = [None] * self._size
         for i in range(self._size):
-            python_list[i] = self.get_at(i)
+            python_list[i] = self[i]
 
         return python_list
 

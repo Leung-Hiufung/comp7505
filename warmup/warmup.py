@@ -249,7 +249,7 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     # YOUR CODE GOES HERE
     alice = 0
     bob = 0
-    is_alice_turn = True
+    # is_alice_turn = True
     # array = DynamicArray()
     # array.initialise_from_list(numbers)
     # array.quicksort()
@@ -264,13 +264,19 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     length = binary_length(numbers)
     quick_sort(numbers, 0, length)
 
-    for i in range(length - 1, -1, -1):
-        num = numbers[i]
-        if is_alice_turn:
-            alice += num * ((num + 1) % 2)
-        else:
-            bob += num * (num % 2)
-        is_alice_turn = not is_alice_turn
+    # for i in range(length - 1, -1, -1):
+    #     num = numbers[i]
+    #     if is_alice_turn:
+    #         alice += num * ((num + 1) % 2)
+    #     else:
+    #         bob += num * (num % 2)
+    #     is_alice_turn = not is_alice_turn
+
+    for i in range(length - 1, -1, -2):
+        alice_pick = numbers[i]
+        bob_pick = numbers[i - 1]
+        alice += alice * ~(alice_pick & 1)
+        bob += bob_pick * (bob_pick & 1)
 
     if alice > bob:
         return ("Alice", alice)
