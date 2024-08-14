@@ -102,7 +102,9 @@ def test_kmer_store_build(filepath: str):
     for i in result:
         print(store.count(i), end="\t")
     # print(store.freq_geq(frequency))
-    # print(store.count("TTT"))
+    print(store.count("TTT"))
+    store.batch_delete(["TTT"])
+    print(store.count("TTT"))
 
 
 sys.argv = ["test_kmers.py", "--build", "malloclabs/dna.txt"]

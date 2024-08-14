@@ -271,8 +271,8 @@ class Node:
     def increase_occurance(self) -> None:
         self._occurance += 1
 
-    def reduce_occurance(self) -> None:
-        self._occurance -= 1
+    def reduce_occurance(self, num: int) -> None:
+        self._occurance -= num
 
     def get_depth(self) -> int:
         return self._depth
@@ -362,9 +362,10 @@ class Trie:
         if length > node.get_depth():
             return
 
+        reduce_times = node.get_occurance()
+
         while True:
-            # node.reduce_occurance()
-            node._occurance = 0
+            node.reduce_occurance(reduce_times)
             parent = node.get_parent()
 
             # If occurance reduces to 0, remove that node
