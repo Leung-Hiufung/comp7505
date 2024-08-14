@@ -136,7 +136,7 @@ class BitVector:
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        return self.set_at(index)
+        return self.get_at(index)
 
     def set_at(self, index: int) -> None:
         """

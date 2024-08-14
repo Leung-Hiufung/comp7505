@@ -203,13 +203,13 @@ def k_cool(k: int, n: int) -> int:
         # calculate last bit each iteration
         if n & 1:
             # if n is odd, then the bit is 1, this power exists, add k^i, 0<=i<max_power
-            result = (result + power) % MODULUS
+            result = result + power
         # calculate next iteration's result, which is k^(i+1)
         power *= k
         # n divided by 2
         n >>= 1
 
-    return result
+    return result % MODULUS
 
 
 def number_game(numbers: list[int]) -> tuple[str, int]:
@@ -275,7 +275,7 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     for i in range(length - 1, -1, -2):
         alice_pick = numbers[i]
         bob_pick = numbers[i - 1]
-        alice += alice * ~(alice_pick & 1)
+        alice += alice_pick * ((alice_pick & 1) ^ 1)
         bob += bob_pick * (bob_pick & 1)
 
     if alice > bob:

@@ -54,6 +54,7 @@ def test_k_cool():
     assert k_cool(3, 5) == 10  # The fifth 3-cool number is 3^2 + 3^0 = 10
     assert k_cool(10, 42) == 101010
     assert k_cool(128, 5000) == 9826529652304384
+    print(k_cool(10**42, 100000))
     # The actual result is larger than 10^16 + 61,
     # so k_cool returns the remainder of division by 10^16 + 61
 
@@ -148,6 +149,7 @@ def test_road_illumination():
 
 
 sys.argv = ["test_warmup.py", "--kcool"]
+# sys.argv = ["test_warmup.py", "--numbergame"]
 # The actual program we're running here
 if __name__ == "__main__":
     # Get and parse the command line arguments

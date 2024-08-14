@@ -41,26 +41,28 @@ class KmerStore:
         k-mers and load them into your data structure.
         """
         with open(infile) as file:
-            kmers = file.read().split("\n")
-        num_of_sequences = binary_length(kmers)
-        # length = 0
-        # sequence = ""
-        # for _ in sequence_raw:
-        #     if _ != "\n":
-        #         size += 1
-        #         length += _
+            data = file.read()
+        # length_dna = binary_length(dna)
+        length_dna = 0
+        dna = ""
+        for _ in data:
+            if _ != "\n":
+                length_dna += 1
+                dna += _
 
         # num_of_sequences = length - self._k + 1
-        if num_of_sequences < 1:
+
+        if length_dna < 1:
             raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
 
-        # kmers = [None] * (length - self._k + 1)
+        num_kmers = length_dna - self._k + 1
+        kmers = [None] * num_kmers
 
-        # for index in range(length - self._k + 1):
-        #     kmer = ""
-        #     for i in range(self._k):
-        #         kmer += sequence[index + i]
-        #     kmers[index] = kmer
+        for index in range(num_kmers):
+            kmer = ""
+            for i in range(self._k):
+                kmer += dna[index + i]
+            kmers[index] = kmer
 
         self.batch_insert(kmers)
 

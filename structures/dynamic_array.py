@@ -218,7 +218,7 @@ class DynamicArray:
         else:
             # Remove other elements, O(N)
             index = self._size + index if index < 0 else index
-            for i in range(index, self._size):
+            for i in range(index, self._size - 1):
                 self.set_at(i, self.get_at(i + 1))
         self._size -= 1
 

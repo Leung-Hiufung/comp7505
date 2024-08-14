@@ -214,6 +214,9 @@ def test_bitvector():
     # Test 1: Append single bit
     print("Append 1")
     bitvector.append(1)
+    print(bitvector[0])
+    print(bitvector[1])
+    assert bitvector[0] == 1
     print(bitvector)  # Expect: '1'
 
     # Test 2: Append multiple bits
