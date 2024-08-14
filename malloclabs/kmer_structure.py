@@ -363,7 +363,8 @@ class Trie:
             return
 
         while True:
-            node.reduce_occurance()
+            # node.reduce_occurance()
+            node._occurance = 0
             parent = node.get_parent()
 
             # If occurance reduces to 0, remove that node

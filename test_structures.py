@@ -468,8 +468,14 @@ def test_bitvector():
         bitvector.append(1 if is1 else 0)
         is1 = not is1
     print(bitvector)
-    bitvector.reverse()
-    print(bitvector)
+    for b in range(bitvector.get_size()):
+        print(bitvector[b], end="")
+
+    # bitvector.reverse()
+    # print(bitvector)
+    # bitvector.append(1)
+    # bitvector.append(1)
+    # print(bitvector)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]

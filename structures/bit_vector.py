@@ -147,7 +147,7 @@ class BitVector:
         # real_index = self._get_real_index(index)
         # if real_index is None:
         #     return
-        self._set_status(index, 1 if not self._is_flipped else 0)
+        self._set_status(index, 1)
 
     def unset_at(self, index: int) -> None:
         """
@@ -158,13 +158,14 @@ class BitVector:
         # real_index = self._get_real_index(index)
         # if real_index is None:
         #     return
-        self._set_status(index, 0 if not self._is_flipped else 1)
+        self._set_status(index, 0)
 
     def _set_status(self, index: int, state: int) -> None:
         real_index = self._get_real_index(index)
         if real_index is None:
             return
 
+        state = state ^ 1 if self._is_flipped else state
         positions = self._get_position_in_array(real_index)
         index_in_array = positions[0]
         index_in_elem = positions[1]
@@ -199,9 +200,9 @@ class BitVector:
         Time complexity for full marks: O(1*)
         """
         if self._is_reversed:
-            self._prepend_physically(state if not self._is_flipped else state ^ 1)
+            self._prepend_physically(state)
         else:
-            self._append_physically(state if not self._is_flipped else state ^ 1)
+            self._append_physically(state)
 
     def prepend(self, state: Any) -> None:
         """
@@ -211,9 +212,9 @@ class BitVector:
         Time complexity for full marks: O(1*)
         """
         if self._is_reversed:
-            self._append_physically(state if not self._is_flipped else state ^ 1)
+            self._append_physically(state)
         else:
-            self._prepend_physically(state if not self._is_flipped else state ^ 1)
+            self._prepend_physically(state)
 
     def reverse(self) -> None:
         """
@@ -283,6 +284,8 @@ class BitVector:
         # index_in_array = (
         #     index - self._leftmost_index_in_elem + self.BITS_PER_ELEMENT
         # ) // self.BITS_PER_ELEMENT
+        if self._is_reversed:
+            index = self._size - index - 1
 
         index_in_array = index // self.BITS_PER_ELEMENT
 
@@ -311,7 +314,7 @@ class BitVector:
         if self._rightmost_index_in_elem >= self.BITS_PER_ELEMENT or self._size == 1:
             # Bit Overflow
             self._rightmost_index_in_elem = 0
-            state = state if not self._is_flipped else not state
+            state = state ^ 1 if self._is_flipped else state
             new_element = 0 if state == 0 else 1 << self.BITS_PER_ELEMENT - 1
             self._data.append(new_element)
             # self._size += 1
@@ -342,7 +345,7 @@ class BitVector:
         if self._leftmost_index_in_elem < 0:
             # Bit Overflow
             self._leftmost_index_in_elem = self.BITS_PER_ELEMENT - 1
-            state = state if not self._is_flipped else not state
+            state = state ^ 1 if self._is_flipped else state
             new_element = 0 if state == 0 else 1
             self._data.prepend(new_element)
         else:
