@@ -236,6 +236,8 @@ class BitVector:
         Otherwise perform a right shift by `dist`.
         Time complexity for full marks: O(N)
         """
+        if self._size == 0:
+            return
         while dist > 0:
             self._pop_from_logical_left()
             self.append(0)
@@ -253,6 +255,8 @@ class BitVector:
         Otherwise perform a right rotation by `dist`.
         Time complexity for full marks: O(N)
         """
+        if self._size < 2:
+            return
         while dist > 0:
             bit = self._pop_from_logical_left()
             self.append(bit)
@@ -307,6 +311,7 @@ class BitVector:
         if self._rightmost_index_in_elem >= self.BITS_PER_ELEMENT or self._size == 1:
             # Bit Overflow
             self._rightmost_index_in_elem = 0
+            state = state if not self._is_flipped else not state
             new_element = 0 if state == 0 else 1 << self.BITS_PER_ELEMENT - 1
             self._data.append(new_element)
             # self._size += 1
@@ -337,6 +342,7 @@ class BitVector:
         if self._leftmost_index_in_elem < 0:
             # Bit Overflow
             self._leftmost_index_in_elem = self.BITS_PER_ELEMENT - 1
+            state = state if not self._is_flipped else not state
             new_element = 0 if state == 0 else 1
             self._data.prepend(new_element)
         else:

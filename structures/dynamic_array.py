@@ -196,7 +196,7 @@ class DynamicArray:
         if self._size == 0:
             self._zero_index = None
 
-        self.__resize()
+        # self.__resize()
 
     def remove_at(self, index: int) -> Any | None:
         """
@@ -225,7 +225,7 @@ class DynamicArray:
         if self._size == 0:
             self._zero_index = None
 
-        self.__resize()
+        # self.__resize()
         return element
 
     # def _pop_from_front(self) -> None:

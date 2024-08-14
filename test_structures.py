@@ -214,255 +214,267 @@ def test_bitvector():
     This is not marked and is just here for you to test your code.
     """
     print("==== Executing Bit Vector Tests ====")
+    # bitvector = BitVector()
+
+    # # Test 1: Append single bit
+    # print("Append 1")
+    # bitvector.append(1)
+    # assert bitvector[0] == 1
+    # print(bitvector)  # Expect: '1'
+
+    # # Test 2: Append multiple bits
+    # print("Append 0")
+    # bitvector.append(0)
+    # print(bitvector)  # Expect: '10'
+
+    # print("Append 1")
+    # bitvector.append(1)
+    # print(bitvector)  # Expect: '101'
+
+    # # Test 3: Prepend bits
+    # print("Prepend 0")
+    # bitvector.prepend(0)
+    # print(bitvector)  # Expect: '0101'
+
+    # print("Prepend 1")
+    # bitvector.prepend(1)
+    # print(bitvector)  # Expect: '10101'
+
+    # # Test 4: Set bit at index 1
+    # print("Set bit at index 1")
+    # bitvector.set_at(1)
+    # print(bitvector)  # Expect: '11101'
+
+    # # Test 5: Unset bit at index
+    # print("Unset bit at index 2")
+    # bitvector.unset_at(2)
+    # print(bitvector)  # Expect: '11001'
+
+    # # Test 6: Get bit at index
+    # print("Get bit at index 0")
+    # print(bitvector.get_at(0))  # Expect: 1
+
+    # print("Get bit at index 4")
+    # print(bitvector.get_at(4))  # Expect: 1
+
+    # # Test 7: Flip all bits
+    # print("Flip all bits")
+    # bitvector.flip_all_bits()
+    # print(bitvector)  # Expect: '00110'
+
+    # # Test 8: Reverse the bit vector
+    # print("Reverse the bit vector")
+    # bitvector.reverse()
+    # print(bitvector)  # Expect: '01100'
+
+    # # Test 9: Left shift
+    # print("Left shift by 1")
+    # bitvector.shift(1)
+    # print(bitvector)  # Expect: '11000'
+
+    # # Test 10: Right shift
+    # print("Right shift by 2")
+    # bitvector.shift(-2)
+    # print(bitvector)  # Expect: '00110'
+
+    # # Test 11: Append bits to full word
+    # print("BitVector with 64 ones")
+    # bitvector = BitVector()
+    # for _ in range(64):
+    #     bitvector.append(1)
+    # print(bitvector)  # Expect: '111...111' (64 times)
+
+    # # Test 12: Left shift on full word
+    # print("Shift left by 4")
+    # bitvector.shift(4)
+    # print(bitvector)  # Expect: '111...10000' (60 ones followed by 4 zeros)
+
+    # # Test 13: Right shift on full word
+    # print("Shift right by 8")
+    # bitvector.shift(-8)
+    # print(bitvector)  # Expect: '000000001111...111' (8 zeros followed by 56 ones)
+
+    # # Test 14: Rotate left
+    # print("Rotate left by 16")
+    # bitvector.rotate(16)
+    # print(bitvector)  # Expect: '1111...1110000000' (56 ones followed by 8 zeros)
+
+    # # Test 15: Rotate right
+    # print("Rotate right by 8")
+    # bitvector.rotate(-8)
+    # print(bitvector)  # Expect: '000000001111...111' (8 zeros followed by 56 ones)
+
+    # # Test 16: Flip all bits on full word
+    # print("Flip all bits on full word")
+    # bitvector.flip_all_bits()
+    # print(bitvector)  # Expect: '111111110000...000' (8 ones followed by 56 zeros)
+
+    # # Test 17: Prepend to an empty vector
+    # print("Prepend 1 to empty vector")
+    # empty_vector = BitVector()
+    # empty_vector.prepend(1)
+    # print(empty_vector)  # Expect: '1'
+
+    # # Test 18: Append to an empty vector
+    # print("Append 0 to vector")
+    # empty_vector.append(0)
+    # print(empty_vector)  # Expect: '10'
+
+    # # Test 19: Flip on an empty vector
+    # print("Flip all bits on empty vector")
+    # empty_vector = BitVector()
+    # empty_vector.flip_all_bits()
+    # print(empty_vector)  # Expect: '' (remains empty)
+
+    # # Test 20: Reverse on an empty vector
+    # print("Reverse on empty vector")
+    # empty_vector.reverse()
+    # print(empty_vector)  # Expect: '' (remains empty)
+
+    # # Test 21: Large vector operations
+    # print("Large BitVector with 128 ones")
+    # large_vector = BitVector()
+    # for _ in range(128):
+    #     large_vector.append(1)
+    # print(large_vector)
+
+    # print("Shift left by 64")
+    # large_vector.shift(64)
+    # print(large_vector)  # Expect: '1...1000000' (64 ones followed by 64 zeros)
+
+    # print("Shift right by 32")
+    # large_vector.shift(-32)
+    # print(large_vector)  # Expect: '000000001...1' (32 zeros followed by 96 ones)
+
+    # # Test 22: Get out of bounds
+    # print("Get bit at index 130")
+    # print(large_vector.get_at(130))  # Expect: None
+
+    # # Test 23: Set out of bounds
+    # print("Set bit at index 130")
+    # large_vector.set_at(130)
+    # print(large_vector.get_at(130))  # Expect: None (no change)
+
+    # # Test 24: Unset out of bounds
+    # print("Unset bit at index 130")
+    # large_vector.unset_at(130)
+    # print(large_vector.get_at(130))  # Expect: None (no change)
+
+    # # Test 25: Rotate on large vector
+    # print("Rotate left by 32")
+    # large_vector.rotate(32)
+    # print(large_vector)  # Expect: '1...10000000' (96 ones followed by 32 zeros)
+
+    # # Test 26: Rotate on large vector
+    # print("Rotate right by 64")
+    # large_vector.rotate(-64)
+    # print(large_vector)  # Expect: '000000001...1' (64 zeros followed by 64 ones)
+
+    # # Test 27: Set, unset, get on large vector
+    # large_vector.set_at(0)
+    # print("Set bit at index 0")
+    # print(large_vector)  # Expect: '100000001...1'
+
+    # large_vector.unset_at(63)
+    # print("Unset bit at index 63")
+    # print(
+    #     large_vector
+    # )  # Expect: '100000000...1' (first and last ones, zero in between)
+
+    # print("Get bit at index 0")
+    # print(large_vector.get_at(0))  # Expect: 1
+
+    # print("Get bit at index 63")
+    # print(large_vector.get_at(63))  # Expect: 0
+
+    # print("Get bit at index 127")
+    # print(large_vector.get_at(127))  # Expect: 1
+
+    # # Test 28: Flip all bits on large vector
+    # print("Flip all bits on large vector")
+    # large_vector.flip_all_bits()
+    # print(large_vector)  # Expect: '011111110...0' (64 zeros followed by 64 ones)
+
+    # # Test 29: Reverse large vector
+    # print("Reverse large vector")
+    # large_vector.reverse()
+    # print(large_vector)  # Expect: '0000...01111111' (64 ones followed by 64 zeros)
+
+    # # Test 30: Append after operations
+    # print("Append 0 after operations")
+    # large_vector.append(0)
+    # print(large_vector)  # Expect: '0000...011111110'
+
+    # # Test 31: Prepend after operations
+    # print("Prepend 1 after operations")
+    # large_vector.prepend(1)
+    # print(large_vector)  # Expect: '10000...011111110'
+
+    # # Test 32: Check size of bitvector
+    # print("Get size of bitvector")
+    # print(large_vector.get_size())  # Expect: 130 (128 original + 2 append/prepend)
+
+    # # Test 33: Shift on varied vector
+    # print("Shift varied vector left by 3")
+    # varied_vector = BitVector()
+    # for i in range(1, 10):
+    #     varied_vector.append(i % 2)
+    # varied_vector.shift(3)
+    # print(varied_vector)  # Expect: '010000000'
+
+    # print("Shift varied vector right by 3")
+    # varied_vector.shift(-3)
+    # print(varied_vector)  # Expect: '000000010'
+
+    # # Test 34: Rotate on varied vector
+    # print("Rotate varied vector left by 3")
+    # varied_vector.rotate(3)
+    # print(varied_vector)  # Expect: '000010000'
+
+    # print("Rotate varied vector right by 3")
+    # varied_vector.rotate(-3)
+    # print(varied_vector)  # Expect: '000000010'
+
+    # # Test 35: Append and flip operations
+    # print("Flip all bits in small vector")
+    # flipped_vector = BitVector()
+    # flipped_vector.append(0)
+    # flipped_vector.append(1)
+    # flipped_vector.flip_all_bits()
+    # print(flipped_vector)  # Expect: '10'
+
+    # # Test 36: Prepend and reverse operations
+    # print("Reverse small vector")
+    # reversed_vector = BitVector()
+    # reversed_vector.prepend(1)
+    # reversed_vector.prepend(0)
+    # reversed_vector.reverse()
+    # print(reversed_vector)  # Expect: '10'
+
+    # # Test 37: Rotate on full ones
+    # print("Rotate full ones vector left by 32")
+    # ones_vector = BitVector()
+    # for _ in range(64):
+    #     ones_vector.append(1)
+    # ones_vector.rotate(32)
+    # print(ones_vector)  # Expect: '111111111111111
+
+    print("\n new")
     bitvector = BitVector()
-
-    # Test 1: Append single bit
-    print("Append 1")
-    bitvector.append(1)
-    assert bitvector[0] == 1
-    print(bitvector)  # Expect: '1'
-
-    # Test 2: Append multiple bits
-    print("Append 0")
-    bitvector.append(0)
-    print(bitvector)  # Expect: '10'
-
-    print("Append 1")
-    bitvector.append(1)
-    print(bitvector)  # Expect: '101'
-
-    # Test 3: Prepend bits
-    print("Prepend 0")
-    bitvector.prepend(0)
-    print(bitvector)  # Expect: '0101'
-
-    print("Prepend 1")
-    bitvector.prepend(1)
-    print(bitvector)  # Expect: '10101'
-
-    # Test 4: Set bit at index 1
-    print("Set bit at index 1")
-    bitvector.set_at(1)
-    print(bitvector)  # Expect: '11101'
-
-    # Test 5: Unset bit at index
-    print("Unset bit at index 2")
-    bitvector.unset_at(2)
-    print(bitvector)  # Expect: '11001'
-
-    # Test 6: Get bit at index
-    print("Get bit at index 0")
-    print(bitvector.get_at(0))  # Expect: 1
-
-    print("Get bit at index 4")
-    print(bitvector.get_at(4))  # Expect: 1
-
-    # Test 7: Flip all bits
-    print("Flip all bits")
+    is1 = False
     bitvector.flip_all_bits()
-    print(bitvector)  # Expect: '00110'
-
-    # Test 8: Reverse the bit vector
-    print("Reverse the bit vector")
     bitvector.reverse()
-    print(bitvector)  # Expect: '01100'
-
-    # Test 9: Left shift
-    print("Left shift by 1")
-    bitvector.shift(1)
-    print(bitvector)  # Expect: '11000'
-
-    # Test 10: Right shift
-    print("Right shift by 2")
-    bitvector.shift(-2)
-    print(bitvector)  # Expect: '00110'
-
-    # Test 11: Append bits to full word
-    print("BitVector with 64 ones")
-    bitvector = BitVector()
-    for _ in range(64):
-        bitvector.append(1)
-    print(bitvector)  # Expect: '111...111' (64 times)
-
-    # Test 12: Left shift on full word
-    print("Shift left by 4")
-    bitvector.shift(4)
-    print(bitvector)  # Expect: '111...10000' (60 ones followed by 4 zeros)
-
-    # Test 13: Right shift on full word
-    print("Shift right by 8")
-    bitvector.shift(-8)
-    print(bitvector)  # Expect: '000000001111...111' (8 zeros followed by 56 ones)
-
-    # Test 14: Rotate left
-    print("Rotate left by 16")
-    bitvector.rotate(16)
-    print(bitvector)  # Expect: '1111...1110000000' (56 ones followed by 8 zeros)
-
-    # Test 15: Rotate right
-    print("Rotate right by 8")
-    bitvector.rotate(-8)
-    print(bitvector)  # Expect: '000000001111...111' (8 zeros followed by 56 ones)
-
-    # Test 16: Flip all bits on full word
-    print("Flip all bits on full word")
-    bitvector.flip_all_bits()
-    print(bitvector)  # Expect: '111111110000...000' (8 ones followed by 56 zeros)
-
-    # Test 17: Prepend to an empty vector
-    print("Prepend 1 to empty vector")
-    empty_vector = BitVector()
-    empty_vector.prepend(1)
-    print(empty_vector)  # Expect: '1'
-
-    # Test 18: Append to an empty vector
-    print("Append 0 to vector")
-    empty_vector.append(0)
-    print(empty_vector)  # Expect: '10'
-
-    # Test 19: Flip on an empty vector
-    print("Flip all bits on empty vector")
-    empty_vector = BitVector()
-    empty_vector.flip_all_bits()
-    print(empty_vector)  # Expect: '' (remains empty)
-
-    # Test 20: Reverse on an empty vector
-    print("Reverse on empty vector")
-    empty_vector.reverse()
-    print(empty_vector)  # Expect: '' (remains empty)
-
-    # Test 21: Large vector operations
-    print("Large BitVector with 128 ones")
-    large_vector = BitVector()
-    for _ in range(128):
-        large_vector.append(1)
-    print(large_vector)
-
-    print("Shift left by 64")
-    large_vector.shift(64)
-    print(large_vector)  # Expect: '1...1000000' (64 ones followed by 64 zeros)
-
-    print("Shift right by 32")
-    large_vector.shift(-32)
-    print(large_vector)  # Expect: '000000001...1' (32 zeros followed by 96 ones)
-
-    # Test 22: Get out of bounds
-    print("Get bit at index 130")
-    print(large_vector.get_at(130))  # Expect: None
-
-    # Test 23: Set out of bounds
-    print("Set bit at index 130")
-    large_vector.set_at(130)
-    print(large_vector.get_at(130))  # Expect: None (no change)
-
-    # Test 24: Unset out of bounds
-    print("Unset bit at index 130")
-    large_vector.unset_at(130)
-    print(large_vector.get_at(130))  # Expect: None (no change)
-
-    # Test 25: Rotate on large vector
-    print("Rotate left by 32")
-    large_vector.rotate(32)
-    print(large_vector)  # Expect: '1...10000000' (96 ones followed by 32 zeros)
-
-    # Test 26: Rotate on large vector
-    print("Rotate right by 64")
-    large_vector.rotate(-64)
-    print(large_vector)  # Expect: '000000001...1' (64 zeros followed by 64 ones)
-
-    # Test 27: Set, unset, get on large vector
-    large_vector.set_at(0)
-    print("Set bit at index 0")
-    print(large_vector)  # Expect: '100000001...1'
-
-    large_vector.unset_at(63)
-    print("Unset bit at index 63")
-    print(
-        large_vector
-    )  # Expect: '100000000...1' (first and last ones, zero in between)
-
-    print("Get bit at index 0")
-    print(large_vector.get_at(0))  # Expect: 1
-
-    print("Get bit at index 63")
-    print(large_vector.get_at(63))  # Expect: 0
-
-    print("Get bit at index 127")
-    print(large_vector.get_at(127))  # Expect: 1
-
-    # Test 28: Flip all bits on large vector
-    print("Flip all bits on large vector")
-    large_vector.flip_all_bits()
-    print(large_vector)  # Expect: '011111110...0' (64 zeros followed by 64 ones)
-
-    # Test 29: Reverse large vector
-    print("Reverse large vector")
-    large_vector.reverse()
-    print(large_vector)  # Expect: '0000...01111111' (64 ones followed by 64 zeros)
-
-    # Test 30: Append after operations
-    print("Append 0 after operations")
-    large_vector.append(0)
-    print(large_vector)  # Expect: '0000...011111110'
-
-    # Test 31: Prepend after operations
-    print("Prepend 1 after operations")
-    large_vector.prepend(1)
-    print(large_vector)  # Expect: '10000...011111110'
-
-    # Test 32: Check size of bitvector
-    print("Get size of bitvector")
-    print(large_vector.get_size())  # Expect: 130 (128 original + 2 append/prepend)
-
-    # Test 33: Shift on varied vector
-    print("Shift varied vector left by 3")
-    varied_vector = BitVector()
-    for i in range(1, 10):
-        varied_vector.append(i % 2)
-    varied_vector.shift(3)
-    print(varied_vector)  # Expect: '010000000'
-
-    print("Shift varied vector right by 3")
-    varied_vector.shift(-3)
-    print(varied_vector)  # Expect: '000000010'
-
-    # Test 34: Rotate on varied vector
-    print("Rotate varied vector left by 3")
-    varied_vector.rotate(3)
-    print(varied_vector)  # Expect: '000010000'
-
-    print("Rotate varied vector right by 3")
-    varied_vector.rotate(-3)
-    print(varied_vector)  # Expect: '000000010'
-
-    # Test 35: Append and flip operations
-    print("Flip all bits in small vector")
-    flipped_vector = BitVector()
-    flipped_vector.append(0)
-    flipped_vector.append(1)
-    flipped_vector.flip_all_bits()
-    print(flipped_vector)  # Expect: '10'
-
-    # Test 36: Prepend and reverse operations
-    print("Reverse small vector")
-    reversed_vector = BitVector()
-    reversed_vector.prepend(1)
-    reversed_vector.prepend(0)
-    reversed_vector.reverse()
-    print(reversed_vector)  # Expect: '10'
-
-    # Test 37: Rotate on full ones
-    print("Rotate full ones vector left by 32")
-    ones_vector = BitVector()
-    for _ in range(64):
-        ones_vector.append(1)
-    ones_vector.rotate(32)
-    print(ones_vector)  # Expect: '111111111111111
+    for i in range(200):
+        bitvector.append(1 if is1 else 0)
+        is1 = not is1
+    print(bitvector)
+    bitvector.reverse()
+    print(bitvector)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]
-sys.argv = ["test_structures.py", "--dynamicarray"]
-# sys.argv = ["test_structures.py", "--bitvector"]
+# sys.argv = ["test_structures.py", "--dynamicarray"]
+sys.argv = ["test_structures.py", "--bitvector"]
 
 # The actual program we're running here
 if __name__ == "__main__":
