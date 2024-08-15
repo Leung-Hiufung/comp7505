@@ -459,21 +459,39 @@ def test_bitvector():
     # ones_vector.rotate(32)
     # print(ones_vector)  # Expect: '111111111111111
 
-    print("\n new")
+    print("\n new flipped reversed")
     bitvector = BitVector()
     is1 = False
     bitvector.flip_all_bits()
     bitvector.reverse()
-    for i in range(200):
-        bitvector.append(1 if is1 else 0)
+    for i in range(20):
+        bitvector.append(1)
         is1 = not is1
-    print(bitvector)
-    for b in range(bitvector.get_size()):
-        print(bitvector[b], end="")
 
+    print(bitvector)
+    print("append 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1")
+    for bit in [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]:
+        bitvector.append(bit)
+    print(bitvector)
+    print("Rotate 1")
+    bitvector.rotate(1)
+    print(bitvector)
+    # print("Pop right")
+    # bit = bitvector._pop_from_logical_right()
+    # print(bitvector, bit)
+    # print("Append popped")
+    print("Rotate -1")
+    bitvector.rotate(-1)
+    print(bitvector)
+
+    print("Shift 32")
+    bitvector.shift(32)
+    print(bitvector)
+    print("Shift -32")
+    bitvector.shift(-32)
+    print(bitvector)
     # bitvector.reverse()
     # print(bitvector)
-    # bitvector.append(1)
     # bitvector.append(1)
     # print(bitvector)
 

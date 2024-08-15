@@ -47,7 +47,10 @@ class BitVector:
 
         if self._data.get_size() == 1:
             if self._is_flipped:
-                element = self._data.get_at(0) ^ self.FLIP_MASK
+                mask = ((1 << self._size) - 1) << (
+                    self.BITS_PER_ELEMENT - 1 - self._rightmost_index_in_elem
+                )
+                element = self._data.get_at(0) ^ mask
             else:
                 element = self._data.get_at(0)
 
@@ -55,9 +58,8 @@ class BitVector:
                 element >> self.BITS_PER_ELEMENT - 1 - self._rightmost_index_in_elem
             )
             bits += f"{element:0{self._size}b}"
-            return bits
 
-        if self._data.get_size() > 0:
+        if self._data.get_size() > 1:
             # Add bits in the first element
             length = self.BITS_PER_ELEMENT - self._leftmost_index_in_elem
             if self._is_flipped:
@@ -109,6 +111,12 @@ class BitVector:
             return index if not self._is_reversed else self._size - 1 - index
         else:
             return None
+        # if -self._size <= index < 0:
+        #     return self._size + index
+        # elif 0 <= index < self._size:
+        #     return index
+        # else:
+        #     return None
 
     def get_at(self, index: int) -> int | None:
         """
@@ -117,9 +125,15 @@ class BitVector:
         Time complexity for full marks: O(1)
         """
 
-        real_index = self._get_real_index(index)
-        if real_index is None:
-            return
+        # real_index = self._get_real_index(index)
+        if -self._size <= index < 0:
+            real_index = self._size + index
+        elif 0 <= index < self._size:
+            real_index = index
+        else:
+            return None
+        # if real_index is None:
+        #     return
         # bit = self.__getitem__(real_index)
         positions = self._get_position_in_array(real_index)
         index_in_array = positions[0]
@@ -372,7 +386,7 @@ class BitVector:
         Pop the bit from the physical left, and return this bit
         """
         bit = self[0]
-        self[0] = 0
+        self[0] = 0 if not self._is_flipped else 1
         self._size -= 1
         self._leftmost_index_in_elem += 1
 
@@ -391,7 +405,7 @@ class BitVector:
         Pop the bit from the physical left, and return this bit
         """
         bit = self[-1]
-        self[-1] = 0
+        self[-1] = 0 if not self._is_flipped else 1
         self._size -= 1
         self._rightmost_index_in_elem -= 1
 
