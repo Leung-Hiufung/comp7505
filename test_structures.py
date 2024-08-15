@@ -464,32 +464,39 @@ def test_bitvector():
     is1 = False
     bitvector.flip_all_bits()
     bitvector.reverse()
-    for i in range(20):
-        bitvector.append(1)
-        is1 = not is1
+    # for i in range(1000):
+    #     bitvector.append(1)
+    #     is1 = not is1
 
     print(bitvector)
-    print("append 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1")
-    for bit in [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]:
+    print("append 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1")
+    for bit in [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]:
         bitvector.append(bit)
     print(bitvector)
-    print("Rotate 1")
-    bitvector.rotate(1)
+    # print("Rotate 72")
+    # bitvector.rotate(72)
+    # print(bitvector)
+    for i in range(4):
+        print("Pop right")
+        bit = bitvector._pop_from_logical_right()
+        print(bitvector, bit)
+    print("flip")
+    bitvector.flip_all_bits()
     print(bitvector)
-    # print("Pop right")
-    # bit = bitvector._pop_from_logical_right()
-    # print(bitvector, bit)
     # print("Append popped")
-    print("Rotate -1")
-    bitvector.rotate(-1)
-    print(bitvector)
+    # print("Rotate -72")
+    # bitvector.rotate(-72)
+    # print(bitvector)
+    # print("Rotate -4")
+    # bitvector.rotate(-4)
+    # print(bitvector)
 
-    print("Shift 32")
-    bitvector.shift(32)
-    print(bitvector)
-    print("Shift -32")
-    bitvector.shift(-32)
-    print(bitvector)
+    # print("Shift 32")
+    # bitvector.shift(32)
+    # print(bitvector)
+    # print("Shift -32")
+    # bitvector.shift(-32)
+    # print(bitvector)
     # bitvector.reverse()
     # print(bitvector)
     # bitvector.append(1)

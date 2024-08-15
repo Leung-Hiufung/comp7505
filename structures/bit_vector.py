@@ -385,7 +385,7 @@ class BitVector:
         """
         Pop the bit from the physical left, and return this bit
         """
-        bit = self[0]
+        bit = self[0 if not self._is_reversed else -1]
         self[0] = 0 if not self._is_flipped else 1
         self._size -= 1
         self._leftmost_index_in_elem += 1
@@ -404,7 +404,7 @@ class BitVector:
         """
         Pop the bit from the physical left, and return this bit
         """
-        bit = self[-1]
+        bit = self[-1 if not self._is_reversed else 0]
         self[-1] = 0 if not self._is_flipped else 1
         self._size -= 1
         self._rightmost_index_in_elem -= 1
