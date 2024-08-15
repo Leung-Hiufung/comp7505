@@ -38,6 +38,9 @@ class DynamicArray:
         # Should be collapsed
         elif self._size < self._capacity // 4:
             new_capacity = self._capacity // 2
+        # No size adjusted, redistribute element
+        elif self._zero_index == 0 or self._zero_index == self._size:
+            new_capacity = self._capacity
         else:
             return
 
@@ -115,7 +118,10 @@ class DynamicArray:
         if real_index is None:
             return
         else:
-            self._array[real_index] = element
+            try:
+                self._array[real_index] = element
+            except IndexError:
+                pass
 
     def __setitem__(self, index: int, element: Any) -> None:
         """

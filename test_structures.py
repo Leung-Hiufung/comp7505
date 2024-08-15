@@ -207,6 +207,11 @@ def test_dynamic_array():
     print(array)
     assert str(array) == "[0, 0, 1, 2, 4, 4, 6, 7, 9]"
 
+    # for i in range(10000):
+    #     array.prepend(i)
+    #     array[0] = i
+    # print(array)
+
 
 def test_bitvector():
     """
@@ -473,34 +478,11 @@ def test_bitvector():
     for bit in [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]:
         bitvector.append(bit)
     print(bitvector)
-    # print("Rotate 72")
-    # bitvector.rotate(72)
-    # print(bitvector)
-    for i in range(4):
-        print("Pop right")
-        bit = bitvector._pop_from_logical_right()
-        print(bitvector, bit)
-    print("flip")
-    bitvector.flip_all_bits()
-    print(bitvector)
-    # print("Append popped")
-    # print("Rotate -72")
-    # bitvector.rotate(-72)
-    # print(bitvector)
-    # print("Rotate -4")
-    # bitvector.rotate(-4)
-    # print(bitvector)
 
-    # print("Shift 32")
-    # bitvector.shift(32)
-    # print(bitvector)
-    # print("Shift -32")
-    # bitvector.shift(-32)
-    # print(bitvector)
-    # bitvector.reverse()
-    # print(bitvector)
-    # bitvector.append(1)
-    # print(bitvector)
+    for i in range(7739):
+        print(i, bitvector._data._zero_index)
+        bit = bitvector._pop_from_logical_left()
+        bitvector.append(bit)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]
