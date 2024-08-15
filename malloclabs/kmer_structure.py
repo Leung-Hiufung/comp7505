@@ -35,6 +35,9 @@ class KmerStore:
         self._trie = Trie()
         self._kmer_error_message = f"Not a valid kmer with a size of {self._k} that only contains {self.NUCLEOTIDES}."
 
+    def __str__(self) -> str:
+        return str(self._trie)
+
     def read(self, infile: str) -> None:
         """
         Given a path to an input file, break the sequences into
@@ -72,8 +75,66 @@ class KmerStore:
                     kmer_index += 1
 
         self.batch_insert(kmers)
-        # for _ in kmers:
-        #     print(_)
+        self.kmers = kmers
+        # for k in kmers:
+        #     print(k)
+
+    def batch_delete_t(self, kmers: list[str]) -> None:
+        ks = []
+        for kmer in self.kmers:
+            if kmer not in kmers:
+                ks.append(kmer)
+        self.kmers = ks
+
+    def feq_geq_t(self, m: int) -> list[str]:
+        k = {}
+        result = []
+        for kmer in self.kmers:
+            feq = k.get(kmer)
+            if feq is None:
+                k[kmer] = 1
+            else:
+                k[kmer] += 1
+        for kmer in k:
+            if k[kmer] >= m:
+                result.append(kmer)
+        return result
+
+    def count_t(self, kmer: str) -> int:
+        count = 0
+        for k in self.kmers:
+            if k == kmer:
+                count += 1
+        return count
+
+    def count_geq_t(self, kmer: str) -> int:
+        count = 0
+        ks = []
+        for k in self.kmers:
+            if k >= kmer:
+                count += 1
+                ks.append(k)
+        # print(sorted(ks))
+        return count
+
+    def compatible_t(self, kmer: str) -> int:
+        suffix = kmer[-2:]
+        prefix = [None] * 2
+        for i in range(2):
+            if suffix[i] == "A":
+                prefix[i] = "T"
+            elif suffix[i] == "C":
+                prefix[i] = "G"
+            elif suffix[i] == "G":
+                prefix[i] = "C"
+            elif suffix[i] == "T":
+                prefix[i] = "A"
+
+        count = 0
+        for k in self.kmers:
+            if k[1] == prefix[1] and k[0] == prefix[0]:
+                count += 1
+        return count
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
@@ -229,6 +290,14 @@ class Node:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def to_string(self, level: int = 0) -> str:
+        result = " " * (level * 2) + f"{self._nucleotide}({self._occurance})\n"
+        for child in self._child:
+            # child = self.get_child(nucleotide)
+            if child is not None:
+                result += child.to_string(level + 1)
+        return result
+
     def get_data(self) -> str:
         return self._nucleotide
 
@@ -264,7 +333,7 @@ class Node:
     def remove_child(self, nucleotide: str) -> None:
         index = self._nucleotide_hash(nucleotide)
         self._child[index] = None
-        self._occurance -= 1
+        # self._occurance -= 1
 
     def get_parent(self) -> Node:
         return self._parent
@@ -327,6 +396,9 @@ class Trie:
 
     def __init__(self) -> None:
         self._root = Node()
+
+    def __str__(self) -> str:
+        return self._root.to_string()
 
     def get_root(self) -> Node:
         return self._root
