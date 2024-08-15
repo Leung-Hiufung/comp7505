@@ -490,6 +490,7 @@ def test_bitvector():
         )
         bit = bitvector._pop_from_logical_right()
         bitvector.prepend(bit)
+    bitvector.shift(-666)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]

@@ -90,18 +90,19 @@ def test_kmer_store_build(filepath: str):
     filepath = "malloclabs/dna.txt"
 
     # 初始化 KmerStore，设置 k 为 20
-    k = 4
+    k = 45
     store = KmerStore(k)
 
     # 从文件中读取序列并插入到 KmerStore 中
     store.read(filepath)
 
-    frequency = 10
+    frequency = 8
     result = store.freq_geq(frequency)
     print(result)
     for i in result:
         print(store.count(i), end="\t")
     # print(store.freq_geq(frequency))
+    print()
     kmer = "TTTT"
     print(store.count(kmer))
     store.batch_delete([kmer])

@@ -40,29 +40,36 @@ class KmerStore:
         Given a path to an input file, break the sequences into
         k-mers and load them into your data structure.
         """
+        array = DynamicArray()
         with open(infile) as file:
-            data = file.read()
-        # length_dna = binary_length(dna)
-        length_dna = 0
-        dna = ""
-        for _ in data:
-            if _ != "\n":
-                length_dna += 1
-                dna += _
+            for line in file:
+                array.append(line)
 
-        # num_of_sequences = length - self._k + 1
+        num_sequences = array.get_size()
+        # Validate the file
+        for i in range(1, num_sequences):
+            if binary_length(array[i - 1]) != binary_length(array[i]):
+                raise IOError("Each line has different length in file.")
 
-        if length_dna < 1:
+        length_sequence = binary_length(array[0]) - 1  # '\n' included
+        # Validate the length of each line
+        if length_sequence < 1:
             raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
 
-        num_kmers = length_dna - self._k + 1
+        num_kmers_line = length_sequence - self._k + 1
+        num_kmers = num_kmers_line * num_sequences
         kmers = [None] * num_kmers
 
-        for index in range(num_kmers):
-            kmer = ""
-            for i in range(self._k):
-                kmer += dna[index + i]
-            kmers[index] = kmer
+        kmer_index = 0
+        while kmer_index < num_kmers:
+            for sequence_index in range(num_sequences):
+                sequence = array[sequence_index]
+                for index in range(num_kmers_line):
+                    kmer = ""
+                    for i in range(self._k):
+                        kmer += sequence[index + i]
+                    kmers[kmer_index] = kmer
+                    kmer_index += 1
 
         self.batch_insert(kmers)
         # for _ in kmers:
