@@ -479,10 +479,17 @@ def test_bitvector():
         bitvector.append(bit)
     print(bitvector)
 
-    for i in range(7739):
-        print(i, bitvector._data._zero_index)
-        bit = bitvector._pop_from_logical_left()
-        bitvector.append(bit)
+    for i in range(450):
+        if i > 446:
+            pass
+        print(
+            i,
+            bitvector._data._zero_index,
+            bitvector._data._size,
+            bitvector._data._array,
+        )
+        bit = bitvector._pop_from_logical_right()
+        bitvector.prepend(bit)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]

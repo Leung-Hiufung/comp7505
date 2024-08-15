@@ -39,7 +39,7 @@ class DynamicArray:
         elif self._size < self._capacity // 4:
             new_capacity = self._capacity // 2
         # No size adjusted, redistribute element
-        elif self._zero_index == 0 or self._zero_index == self._size:
+        elif self._zero_index <= 0 or self._zero_index >= self._size:
             new_capacity = self._capacity
         else:
             return
