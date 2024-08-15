@@ -142,8 +142,8 @@ class KmerStore:
         duplicates) in O(n) time.
         """
         for kmer in kmers:
-            if not self._is_valid_kmer(kmer):
-                raise ValueError(self._kmer_error_message)
+            # if not self._is_valid_kmer(kmer):
+            #     raise ValueError(self._kmer_error_message)
             self._trie.insert(kmer)
 
     def batch_delete(self, kmers: list[str]) -> None:
@@ -153,8 +153,8 @@ class KmerStore:
         """
 
         for kmer in kmers:
-            if not self._is_valid_kmer(kmer):
-                raise ValueError(self._kmer_error_message)
+            # if not self._is_valid_kmer(kmer):
+            #     raise ValueError(self._kmer_error_message)
             self._trie.delete(kmer)
 
     def freq_geq(self, m: int) -> list[str]:
@@ -191,9 +191,9 @@ class KmerStore:
                 self._freq_geq_recursion(m, child, kmer + child.get_data(), array)
 
     def count_prefix(self, sequence: str = "") -> int:
-        for char in sequence:
-            if not (char == "A" or char == "C" or char == "G" or char == "T"):
-                raise ValueError(f"Sequence can only contains {self.NUCLEOTIDES}")
+        # for char in sequence:
+        # if not (char == "A" or char == "C" or char == "G" or char == "T"):
+        #     raise ValueError(f"Sequence can only contains {self.NUCLEOTIDES}")
         return self._trie.get_occurance(sequence)
 
     def count(self, kmer: str) -> int:
@@ -202,8 +202,8 @@ class KmerStore:
         your data structure.
         Time complexity for full marks: O(log n)
         """
-        if not self._is_valid_kmer(kmer):
-            raise ValueError(self._kmer_error_message)
+        # if not self._is_valid_kmer(kmer):
+        #     raise ValueError(self._kmer_error_message)
         return self._trie.get_occurance(kmer)
 
     def count_geq(self, kmer: str) -> int:
@@ -212,8 +212,8 @@ class KmerStore:
         are lexicographically greater or equal.
         Time complexity for full marks: O(log n)
         """
-        if not self._is_valid_kmer(kmer):
-            raise ValueError(self._kmer_error_message)
+        # if not self._is_valid_kmer(kmer):
+        #     raise ValueError(self._kmer_error_message)
 
         count = 0
         node = self._trie.get_root()
@@ -243,8 +243,8 @@ class KmerStore:
         characters of all other k-mers.
         Time complexity for full marks: O(1) :-)
         """
-        if not self._is_valid_kmer(kmer):
-            raise ValueError
+        # if not self._is_valid_kmer(kmer):
+        #     raise ValueError
 
         suffix = [kmer[-2], kmer[-1]]
         prefix = [None] * 2
@@ -275,8 +275,8 @@ class KmerStore:
 class Node:
 
     def __init__(self, nucleotide: str = "ROOT", depth: int = 0) -> None:
-        if not self._is_valid_char(nucleotide) and not nucleotide == "ROOT":
-            raise ValueError
+        # if not self._is_valid_char(nucleotide) and not nucleotide == "ROOT":
+        #     raise ValueError
         self._nucleotide = nucleotide
         self._child = [None] * 4
         self._parent = None
@@ -397,8 +397,8 @@ class Trie:
     def __init__(self) -> None:
         self._root = Node()
 
-    def __str__(self) -> str:
-        return self._root.to_string()
+    # def __str__(self) -> str:
+    #     return self._root.to_string()
 
     def get_root(self) -> Node:
         return self._root
@@ -429,6 +429,8 @@ class Trie:
             node.increase_occurance()
 
     def delete(self, kmer: str) -> None:
+        if kmer == "GTCG":
+            pass
         node = self._root
         length = binary_length(kmer)
 
@@ -449,13 +451,15 @@ class Trie:
 
             # If occurance reduces to 0, remove that node
             if node.get_occurance() == 0:
-                for nucleotide in self.NUCLEOTIDES:
-                    if parent.get_child(nucleotide) == node:
-                        parent.remove_child(nucleotide)
-                        break
+                parent.remove_child(node.get_data())
+                # for nucleotide in self.NUCLEOTIDES:
+                #     if parent.get_child(nucleotide) == node:
+                #         parent.remove_child(nucleotide)
+                #         break
             node = parent
-            if node is None:
-                # `parent` is root, then node is None
+            if node is self._root:
+                # `parent` is root
+                node.reduce_occurance(reduce_times)
                 break
 
 

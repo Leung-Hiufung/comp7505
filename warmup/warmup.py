@@ -264,7 +264,8 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     #         bob += num * (num % 2)
     #     is_alice_turn = not is_alice_turn
     length = binary_length(numbers)
-    quick_sort(numbers, 0, length)
+    # quick_sort(numbers, 0, length)
+    heap_sort(numbers)
 
     # for i in range(length - 1, -1, -1):
     #     num = numbers[i]
@@ -420,3 +421,59 @@ def binary_length(array: list[Any]) -> int:
             high = mid
 
     return low
+
+
+def heap_sort(arr: list[int]) -> None:
+    """"""
+    last_index = binary_length(arr) - 1
+
+    def holds_heap(index: int) -> None:
+
+        left_index = index * 2 + 1
+        right_index = index * 2 + 2
+
+        # case 1: no children
+        if left_index > last_index:
+            return
+
+        # case 2: only one child
+        if left_index == last_index:
+            max_value = arr[index] if arr[index] >= arr[left_index] else arr[left_index]
+        else:
+            # case 3: has two children
+            if arr[index] >= arr[left_index]:
+                max_value = (
+                    arr[index] if arr[index] >= arr[right_index] else arr[right_index]
+                )
+            else:
+                max_value = (
+                    arr[left_index]
+                    if arr[left_index] >= arr[right_index]
+                    else arr[right_index]
+                )
+
+        # base case: parent is biggest
+        if arr[index] == max_value:
+            return
+
+        # recursion: swap bigger child with parent, then holds the heap
+        if arr[left_index] == max_value:
+            arr[index], arr[left_index] = arr[left_index], arr[index]
+            holds_heap(left_index)
+
+        else:
+            # right one is bigger
+            arr[index], arr[right_index] = arr[right_index], arr[index]
+            holds_heap(right_index)
+
+    # build heap
+    for index in range((len(arr) - 2) // 2, -1, -1):
+        holds_heap(index)
+
+    # heap sort
+    while last_index >= 0:
+        arr[0], arr[last_index] = arr[last_index], arr[0]
+        last_index -= 1
+        holds_heap(0)
+
+    # return arr
