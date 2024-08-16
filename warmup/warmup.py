@@ -249,47 +249,69 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     """
 
     # YOUR CODE GOES HERE
-    alice = 0
-    bob = 0
-    # is_alice_turn = True
-    # array = DynamicArray()
-    # array.initialise_from_list(numbers)
-    # array.quicksort()
-    # array.reverse()
-    # for i in range(array.get_size()):
-    #     num = array.get_at(i)
-    #     if is_alice_turn:
-    #         alice += num * ((num + 1) % 2)
-    #     else:
-    #         bob += num * (num % 2)
-    #     is_alice_turn = not is_alice_turn
-    length = binary_length(numbers)
+    # alice = 0
+    # bob = 0
+
+    # length = binary_length(numbers)
     # quick_sort(numbers, 0, length)
-    heap_sort(numbers)
+    # i = length - 1
+    # while i > 0:
+    #     alice_pick = numbers[i]
+    #     bob_pick = numbers[i - 1]
+    #     alice += alice_pick * ((alice_pick & 1) ^ 1)
+    #     bob += bob_pick * (bob_pick & 1)
+    #     i -= 2
 
-    # for i in range(length - 1, -1, -1):
-    #     num = numbers[i]
-    #     if is_alice_turn:
-    #         alice += num * ((num + 1) % 2)
-    #     else:
-    #         bob += num * (num % 2)
-    #     is_alice_turn = not is_alice_turn
+    evens = [num for num in numbers if num & 1 == 0]
+    odds = [num for num in numbers if num & 1 == 1]
 
-    # for i in range(length - 1, -1, -2):
-    i = length - 1
-    while i > 0:
-        alice_pick = numbers[i]
-        bob_pick = numbers[i - 1]
-        alice += alice_pick * ((alice_pick & 1) ^ 1)
-        bob += bob_pick * (bob_pick & 1)
-        i -= 2
+    evens_length = binary_length(evens)
+    odds_length = binary_length(odds)
+    # odd numbers and even numbers sort respectively
+    quick_sort(evens, 0, evens_length)
+    quick_sort(odds, 0, odds_length)
 
-    if alice > bob:
-        return ("Alice", alice)
-    elif alice < bob:
-        return ("Bob", bob)
+    even_index = evens_length - 1  # the last element index in evens
+    odd_index = odds_length - 1  # the last element index in odds
+
+    alice_score = 0
+    bob_score = 0
+    turn = 0  # 0 is Alice's turn , 1 is Bob's turn
+
+    # even/odd index == 1: no element in the array, i.e. none
+    # even/odd index > -1: array has element, i.e. not none
+    while even_index > -1 or odd_index > -1:
+        # Alice turn
+        if turn == 0:
+            if even_index > -1 and (
+                odd_index == -1 or evens[even_index] >= odds[odd_index]
+            ):
+                alice_score += evens[even_index]
+                # Pop the element
+                evens[even_index] = None
+                even_index -= 1
+            elif odd_index > -1:
+                odds[odd_index] = None
+                odd_index -= 1
+        # Bob turn
+        else:
+            if odd_index > -1 and (
+                even_index == -1 or odds[odd_index] >= evens[even_index]
+            ):
+                bob_score += odds[odd_index]
+                odds[odd_index] = None
+                odd_index -= 1
+            elif even_index > -1:
+                evens[even_index] = None
+                even_index -= 1
+        turn ^= 1
+
+    if alice_score > bob_score:
+        return ("Alice", alice_score)
+    elif alice_score < bob_score:
+        return ("Bob", bob_score)
     else:
-        return ("Tie", alice)
+        return ("Tie", alice_score)
 
 
 def road_illumination(road_length: int, poles: list[int]) -> float:
@@ -321,27 +343,7 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     """
 
     # YOUR CODE GOES HERE
-    # array = DynamicArray()
-    # array.initialise_from_list(poles)
-    # if array.get_size() == 0:
-    #     return 0
 
-    # array.quicksort()
-
-    # # Ensure the first light covers the start of the road, compare (0, [0])
-    # radius = array.get_at(0)
-
-    # for i in range(array.get_size() - 1):
-    #     # Ensure lights can cover the middle part of the road
-    #     # Compare ([0], [1]), ([1], [2]), ..., ([-2], [-1])
-    #     distance = array.get_at(i + 1) - array.get_at(i)
-    #     if distance / 2 > radius:
-    #         radius = distance / 2
-
-    # # Ensure the final light covers the end of the road, compare (-1, road_length)
-    # distance = road_length - array.get_at(-1)
-    # radius = distance if distance > radius else radius
-    # return radius
     length = binary_length(poles)
     quick_sort(poles, 0, length)
 
