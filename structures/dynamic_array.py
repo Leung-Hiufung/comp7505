@@ -36,8 +36,8 @@ class DynamicArray:
         if self._size >= self._capacity / 2:
             new_capacity = self._capacity * 2
         # Should be collapsed
-        elif self._size < self._capacity // 4:
-            new_capacity = self._capacity // 2
+        # elif self._size < self._capacity // 4:
+        #     new_capacity = self._capacity // 2
         # No size adjusted, redistribute element
         elif self._zero_index <= 0 or self._zero_index >= self._size:
             new_capacity = self._capacity
@@ -389,7 +389,7 @@ class DynamicArray:
     def get_physical_array(self) -> list[Any]:
         return self._array
 
-    def initialise(self, number: int, amount: int) -> None:
+    def initialise(self, number: Any, amount: int) -> None:
         self._array = [number] * amount
         self._capacity = amount
         self._size = amount
