@@ -295,3 +295,92 @@ ROOT(454)
         A(1)
         C(2)
         T(3)
+
+
+ # num_sequences = binary_length(array) - 1
+        # # Validate the file
+        # # for i in range(1, num_sequences):
+        # #     if binary_length(array[i - 1]) != binary_length(array[i]):
+        # #         raise IOError("Each line has different length in file.")
+
+        # length_sequence = binary_length(array[0]) - 1  # '\n' included
+        # # Validate the length of each line
+        # # if length_sequence < 1:
+        # #     raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
+
+        # num_kmers_line = length_sequence - self._k + 1
+        # num_kmers = num_kmers_line * num_sequences
+        # kmers = [None] * num_kmers
+
+        # kmer_index = 0
+        # while kmer_index < num_kmers:
+        #     for sequence_index in range(num_sequences):
+        #         sequence = array[sequence_index]
+        #         for index in range(num_kmers_line):
+        #             kmer = ""
+        #             for i in range(self._k):
+        #                 kmer += sequence[index + i]
+        #             kmers[kmer_index] = kmer
+        #             kmer_index += 1
+
+        # self.batch_insert(kmers)
+        # self.kmers = kmers
+        # for k in kmers:
+        #     print(k)
+
+    # def batch_delete_t(self, kmers: list[str]) -> None:
+    #     ks = []
+    #     for kmer in self.kmers:
+    #         if kmer not in kmers:
+    #             ks.append(kmer)
+    #     self.kmers = ks
+
+    # def feq_geq_t(self, m: int) -> list[str]:
+    #     k = {}
+    #     result = []
+    #     for kmer in self.kmers:
+    #         feq = k.get(kmer)
+    #         if feq is None:
+    #             k[kmer] = 1
+    #         else:
+    #             k[kmer] += 1
+    #     for kmer in k:
+    #         if k[kmer] >= m:
+    #             result.append(kmer)
+    #     return result
+
+    # def count_t(self, kmer: str) -> int:
+    #     count = 0
+    #     for k in self.kmers:
+    #         if k == kmer:
+    #             count += 1
+    #     return count
+
+    # def count_geq_t(self, kmer: str) -> int:
+    #     count = 0
+    #     ks = []
+    #     for k in self.kmers:
+    #         if k >= kmer:
+    #             count += 1
+    #             ks.append(k)
+    #     # print(sorted(ks))
+    #     return count
+
+    # def compatible_t(self, kmer: str) -> int:
+    #     suffix = kmer[-2:]
+    #     prefix = [None] * 2
+    #     for i in range(2):
+    #         if suffix[i] == "A":
+    #             prefix[i] = "T"
+    #         elif suffix[i] == "C":
+    #             prefix[i] = "G"
+    #         elif suffix[i] == "G":
+    #             prefix[i] = "C"
+    #         elif suffix[i] == "T":
+    #             prefix[i] = "A"
+
+    #     count = 0
+    #     for k in self.kmers:
+    #         if k[1] == prefix[1] and k[0] == prefix[0]:
+    #             count += 1
+    #     return count

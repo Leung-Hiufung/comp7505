@@ -54,93 +54,6 @@ class KmerStore:
                 kmers.append(line[i : i + self._k])
         self.batch_insert(kmers)
         self.kmers = kmers
-        # num_sequences = binary_length(array) - 1
-        # # Validate the file
-        # # for i in range(1, num_sequences):
-        # #     if binary_length(array[i - 1]) != binary_length(array[i]):
-        # #         raise IOError("Each line has different length in file.")
-
-        # length_sequence = binary_length(array[0]) - 1  # '\n' included
-        # # Validate the length of each line
-        # # if length_sequence < 1:
-        # #     raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
-
-        # num_kmers_line = length_sequence - self._k + 1
-        # num_kmers = num_kmers_line * num_sequences
-        # kmers = [None] * num_kmers
-
-        # kmer_index = 0
-        # while kmer_index < num_kmers:
-        #     for sequence_index in range(num_sequences):
-        #         sequence = array[sequence_index]
-        #         for index in range(num_kmers_line):
-        #             kmer = ""
-        #             for i in range(self._k):
-        #                 kmer += sequence[index + i]
-        #             kmers[kmer_index] = kmer
-        #             kmer_index += 1
-
-        # self.batch_insert(kmers)
-        # self.kmers = kmers
-        # for k in kmers:
-        #     print(k)
-
-    # def batch_delete_t(self, kmers: list[str]) -> None:
-    #     ks = []
-    #     for kmer in self.kmers:
-    #         if kmer not in kmers:
-    #             ks.append(kmer)
-    #     self.kmers = ks
-
-    # def feq_geq_t(self, m: int) -> list[str]:
-    #     k = {}
-    #     result = []
-    #     for kmer in self.kmers:
-    #         feq = k.get(kmer)
-    #         if feq is None:
-    #             k[kmer] = 1
-    #         else:
-    #             k[kmer] += 1
-    #     for kmer in k:
-    #         if k[kmer] >= m:
-    #             result.append(kmer)
-    #     return result
-
-    # def count_t(self, kmer: str) -> int:
-    #     count = 0
-    #     for k in self.kmers:
-    #         if k == kmer:
-    #             count += 1
-    #     return count
-
-    # def count_geq_t(self, kmer: str) -> int:
-    #     count = 0
-    #     ks = []
-    #     for k in self.kmers:
-    #         if k >= kmer:
-    #             count += 1
-    #             ks.append(k)
-    #     # print(sorted(ks))
-    #     return count
-
-    # def compatible_t(self, kmer: str) -> int:
-    #     suffix = kmer[-2:]
-    #     prefix = [None] * 2
-    #     for i in range(2):
-    #         if suffix[i] == "A":
-    #             prefix[i] = "T"
-    #         elif suffix[i] == "C":
-    #             prefix[i] = "G"
-    #         elif suffix[i] == "G":
-    #             prefix[i] = "C"
-    #         elif suffix[i] == "T":
-    #             prefix[i] = "A"
-
-    #     count = 0
-    #     for k in self.kmers:
-    #         if k[1] == prefix[1] and k[0] == prefix[0]:
-    #             count += 1
-    #     return count
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
@@ -149,8 +62,8 @@ class KmerStore:
         """
 
         for kmer in kmers:
-            #     # if not self._is_valid_kmer(kmer):
-            #     #     raise ValueError(self._kmer_error_message)
+            # if not self._is_valid_kmer(kmer):
+            #     raise ValueError(self._kmer_error_message)
             self._trie.insert(kmer)
 
     def batch_delete(self, kmers: list[str]) -> None:
@@ -171,40 +84,32 @@ class KmerStore:
         Time complexity for full marks: O(n)
         """
 
-        root = self._trie.get_root()
+        root = self._trie._root
         array = []
-        # array = [None] * (4**self._k)
-        self._freq_geq_recursion(m, root, "", array)
+        if root.get_occurance() >= m:
+            self._freq_geq_recursion(m, root, "", array)
         return array
 
     def _freq_geq_recursion(
-        self, m: int, node: Node, kmer: str, array: list[str]
+        self, m: int, node: TrieNode, kmer: str, array: list[str]
     ) -> None:
         # base case 1: reaches the depth
-        if node.get_depth() == self._k:
-            if node.get_occurance() < m:
+        if node._depth == self._k:
+            if node._occurance < m:
                 return
             else:
                 array.append(kmer)
-                # array[index] = kmer
-                # index += 1
-                # return index
 
-        for nucleotide in self.NUCLEOTIDES:
-            child = node.get_child(nucleotide)
-            if child is None:
+        for i in range(4):
+            child = node._child[i]
+            if child is None or child._occurance < m:
                 # Not such child node
-                continue
-            elif child.get_occurance() < m:
-                # This node has smaller occurance, no need to visit its children
+                # OR This node has smaller occurance, no need to visit its children
                 continue
             else:
-                self._freq_geq_recursion(m, child, kmer + child.get_data(), array)
+                self._freq_geq_recursion(m, child, kmer + child._nucleotide, array)
 
     def count_prefix(self, sequence: str = "") -> int:
-        # for char in sequence:
-        # if not (char == "A" or char == "C" or char == "G" or char == "T"):
-        #     raise ValueError(f"Sequence can only contains {self.NUCLEOTIDES}")
         return self._trie.get_occurance(sequence)
 
     def count(self, kmer: str) -> int:
@@ -226,23 +131,24 @@ class KmerStore:
         # if not self._is_valid_kmer(kmer):
         #     raise ValueError(self._kmer_error_message)
         count = 0
-        node = self._trie.get_root()
+        node = self._trie._root
 
         # Should consider kmer is not in trie
         for nucleotide in kmer:
-            for i in self.NUCLEOTIDES:
-                if i > nucleotide:
-                    greater_node = node.get_child(i)
+            code = self._nucleotide_hash(nucleotide)
+            for i in range(4):
+                if i > code:
+                    greater_node = node._child[i]
                     if greater_node is not None:
-                        count += greater_node.get_occurance()
+                        count += greater_node._occurance
 
-            child = node.get_child(nucleotide)
+            child = node._child[code]
             if child is None:
                 break
             node = child
 
-        if node.get_depth() == self._k:
-            count += node.get_occurance()
+        if node._depth == self._k:
+            count += node._occurance
         return count  # `1` is kmer itself
 
     def compatible(self, kmer: str) -> int:
@@ -253,21 +159,21 @@ class KmerStore:
         characters of all other k-mers.
         Time complexity for full marks: O(1) :-)
         """
-        # if not self._is_valid_kmer(kmer):
-        #     raise ValueError
 
-        suffix = [kmer[-2], kmer[-1]]
-        prefix = [None] * 2
-        for i in range(2):
-            if suffix[i] == "A":
-                prefix[i] = "T"
-            elif suffix[i] == "C":
-                prefix[i] = "G"
-            elif suffix[i] == "G":
-                prefix[i] = "C"
-            else:
-                prefix[i] = "A"
-        return self._trie.get_occurance(prefix[0] + prefix[1])
+        first = self._nucleotide_hash(kmer[-2])
+        second = self._nucleotide_hash(kmer[-1])
+        return self._trie._root._child[first]._child[second]._occurance
+        # prefix = [None] * 2
+        # for i in range(2):
+        #     if suffix[i] == "A":
+        #         prefix[i] = "T"
+        #     elif suffix[i] == "C":
+        #         prefix[i] = "G"
+        #     elif suffix[i] == "G":
+        #         prefix[i] = "C"
+        #     else:
+        #         prefix[i] = "A"
+        # return self._trie.get_occurance(prefix[0] + prefix[1])
 
     # Any other functionality you may need
 
@@ -278,40 +184,86 @@ class KmerStore:
     #             return False
 
     #     return length == self._k
+    def _nucleotide_hash(self, nucleotide: str) -> int:
+        if nucleotide == "A":
+            return 0
+        elif nucleotide == "C":
+            return 1
+        elif nucleotide == "G":
+            return 2
+        elif nucleotide == "T":
+            return 3
+        else:
+            raise ValueError
+
+    def batch_delete_t(self, kmers: list[str]) -> None:
+        ks = []
+        for kmer in self.kmers:
+            if kmer not in kmers:
+                ks.append(kmer)
+        self.kmers = ks
+
+    def feq_geq_t(self, m: int) -> list[str]:
+        k = {}
+        result = []
+        for kmer in self.kmers:
+            feq = k.get(kmer)
+            if feq is None:
+                k[kmer] = 1
+            else:
+                k[kmer] += 1
+        for kmer in k:
+            if k[kmer] >= m:
+                result.append(kmer)
+        return result
+
+    def count_t(self, kmer: str) -> int:
+        count = 0
+        for k in self.kmers:
+            if k == kmer:
+                count += 1
+        return count
+
+    def count_geq_t(self, kmer: str) -> int:
+        count = 0
+        ks = []
+        for k in self.kmers:
+            if k >= kmer:
+                count += 1
+                ks.append(k)
+        # print(sorted(ks))
+        return count
+
+    def compatible_t(self, kmer: str) -> int:
+        suffix = kmer[-2:]
+        prefix = [None] * 2
+        for i in range(2):
+            if suffix[i] == "A":
+                prefix[i] = "T"
+            elif suffix[i] == "C":
+                prefix[i] = "G"
+            elif suffix[i] == "G":
+                prefix[i] = "C"
+            elif suffix[i] == "T":
+                prefix[i] = "A"
+
+        count = 0
+        for k in self.kmers:
+            if k[1] == prefix[1] and k[0] == prefix[0]:
+                count += 1
+        return count
 
 
-# class Array:
+class TrieNode:
 
-#     def __init__(self, size: int = 100) -> None:
-#         self._array = [None] * size
-#         self._size = 0
-
-#     def __getitem__(self, index: int) -> int:
-#         return self._array[index]
-
-#     def __setitem__(self, index: int, number: int) -> None:
-#         self._array[index] = number
-
-#     def to_python_list(self) -> list[int]:
-#         array = [None] * self._size
-#         for i in range(self._size):
-#             array[i] = self[i]
-#         return array
-
-#     def append(self, number: int) -> None:
-#         self._array[self._size] = number
-#         self._size += 1
-
-
-class Node:
-
-    def __init__(self, nucleotide: str = "ROOT", depth: int = 0) -> None:
+    def __init__(self, code: int, nucleotide: str = "ROOT", depth: int = 0) -> None:
         # if not self._is_valid_char(nucleotide) and not nucleotide == "ROOT":
         #     raise ValueError
         self._nucleotide = nucleotide
         self._child = [None] * 4
         self._parent = None
         self._depth = depth
+        self._code = code
         # The number of DNA sequence this node involves
         self._occurance = 0  # if self._nucleotide == "ROOT" else 1
 
@@ -332,44 +284,40 @@ class Node:
     def get_data(self) -> str:
         return self._nucleotide
 
-    def set_child(self, node: Node) -> None:
+    def set_child(self, node: TrieNode) -> None:
         """
         Set the child node as the given node and set child node's parent (i.e. self).
         If self has a corresponding code, do nothing
         """
-        nucleotide = node.get_data()
-        index = self._nucleotide_hash(nucleotide)
+        nucleotide = node._nucleotide
+        code = node._code
 
-        if self._child[index] is None:
-            self._child[index] = node
+        if self._child[code] is None:
+            self._child[code] = node
             node.set_parent(self)
         # else:
         #     self._occurance += 1
         #     node.increase_occurance()
 
-    def get_child(self, nucleotide: str = "") -> Node | list[Node]:
-        if nucleotide == "":
+    def get_child(self, code: int = -1) -> TrieNode | list[TrieNode]:
+        if code == -1:
             return self._child
         else:
-            index = self._nucleotide_hash(nucleotide)
-            return self._child[index]
+            return self._child[code]
 
-    def has_child(self, nucleotide: str = "") -> bool:
-        if nucleotide == "":
+    def has_child(self, code: int = -1) -> bool:
+        if code == -1:
             return [_ for _ in self._child if _ is not None] == []
         else:
-            index = self._nucleotide_hash(nucleotide)
-            return self._child[index] is not None
+            return self._child[code] is not None
 
-    def remove_child(self, nucleotide: str) -> None:
-        index = self._nucleotide_hash(nucleotide)
-        self._child[index] = None
-        # self._occurance -= 1
+    def remove_child(self, code: int) -> None:
+        self._child[code] = None
 
-    def get_parent(self) -> Node:
+    def get_parent(self) -> TrieNode:
         return self._parent
 
-    def set_parent(self, node: Node) -> None:
+    def set_parent(self, node: TrieNode) -> None:
         self._parent = node
 
     def get_occurance(self) -> int:
@@ -384,13 +332,6 @@ class Node:
     def get_depth(self) -> int:
         return self._depth
 
-    def _is_valid_char(self, char: str) -> bool:
-        try:
-            self._nucleotide_hash(char)
-            return True
-        except ValueError:
-            return False
-
     def _nucleotide_hash(self, nucleotide: str) -> int:
         if nucleotide == "A":
             return 0
@@ -403,22 +344,22 @@ class Node:
         else:
             raise ValueError
 
-    # def __eq__(self, other: Node) -> bool:
+    # def __eq__(self, other: TrieNode) -> bool:
     #     return self._nucleotide == other.get_data()
 
-    # def __ne__(self, other: Node) -> bool:
+    # def __ne__(self, other: TrieNode) -> bool:
     #     return self._nucleotide != other.get_data()
 
-    # def __gt__(self, other: Node) -> bool:
+    # def __gt__(self, other: TrieNode) -> bool:
     #     return self._nucleotide > other.get_data()
 
-    # def __ge__(self, other: Node) -> bool:
+    # def __ge__(self, other: TrieNode) -> bool:
     #     return self._nucleotide >= other.get_data()
 
-    # def __lt__(self, other: Node) -> bool:
+    # def __lt__(self, other: TrieNode) -> bool:
     #     return self._nucleotide < other.get_data()
 
-    # def __le__(self, other: Node) -> bool:
+    # def __le__(self, other: TrieNode) -> bool:
     #     return self._nucleotide <= other.get_data()
 
 
@@ -426,12 +367,23 @@ class Trie:
     NUCLEOTIDES = "ACGT"
 
     def __init__(self) -> None:
-        self._root = Node()
+        self._root = TrieNode(-1, "ROOT", 0)
 
     # def __str__(self) -> str:
     #     return self._root.to_string()
+    def _nucleotide_hash(self, nucleotide: str) -> int:
+        if nucleotide == "A":
+            return 0
+        elif nucleotide == "C":
+            return 1
+        elif nucleotide == "G":
+            return 2
+        elif nucleotide == "T":
+            return 3
+        else:
+            raise ValueError
 
-    def get_root(self) -> Node:
+    def get_root(self) -> TrieNode:
         return self._root
 
     def get_occurance(self, kmer: str = "") -> int:
@@ -441,49 +393,54 @@ class Trie:
         """
         parent = self._root
         for nucleotide in kmer:
-            node = parent.get_child(nucleotide)
+            code = self._nucleotide_hash(nucleotide)
+            node = parent._child[code]
             if node is None:
                 return 0
             parent = node
-        return parent.get_occurance()
+        return parent._occurance
 
     def batch_insert(self, kmers: list[str]) -> None:
         pass
 
     def insert(self, kmer: str) -> None:
         node = self._root
-        node.increase_occurance()
+        node._occurance += 1
         for index, nucleotide in enumerate(kmer):
-            if not node.has_child(nucleotide):
-                child = Node(nucleotide, index + 1)
-                node.set_child(child)
+            code = self._nucleotide_hash(nucleotide)
+            if not node._child[code]:
+                child = TrieNode(code, nucleotide, index + 1)
+                node._child[code] = child
+                child._parent = node
             else:
-                child = node.get_child(nucleotide)
+                child = node._child[code]
             node = child
-            node.increase_occurance()
+            node._occurance += 1
 
     def delete(self, kmer: str) -> None:
         node = self._root
         length = len(kmer)
 
         for nucleotide in kmer:
-            child = node.get_child(nucleotide)
+            code = self._nucleotide_hash(nucleotide)
+            child = node._child[code]
             if child is None:
                 break
             node = child
 
-        if length > node.get_depth():
+        if length > node._depth:
             return
 
-        reduce_times = node.get_occurance()
+        reduce_times = node._occurance
 
         while True:
-            node.reduce_occurance(reduce_times)
-            parent = node.get_parent()
+            node._occurance -= reduce_times
+            parent = node._parent
 
             # If occurance reduces to 0, remove that node
-            if node.get_occurance() == 0:
-                parent.remove_child(node.get_data())
+            if node._occurance == 0:
+                parent._child[node._code] = None
+                # parent.remove_child(node.get_data())
                 # for nucleotide in self.NUCLEOTIDES:
                 #     if parent.get_child(nucleotide) == node:
                 #         parent.remove_child(nucleotide)
@@ -491,7 +448,7 @@ class Trie:
             node = parent
             if node is self._root:
                 # `parent` is root
-                node.reduce_occurance(reduce_times)
+                node._occurance -= reduce_times
                 break
 
 

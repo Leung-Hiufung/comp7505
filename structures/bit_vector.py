@@ -73,15 +73,13 @@ class BitVector:
 
         if self._data.get_size() > 2:
             # Add bits in the middle elements
-            if self._size > (1 << 10):
-                bit += "......"
-            else:
-                for i in range(1, self._data.get_size() - 1):
-                    if self._is_flipped:
-                        element = self._data.get_at(i) ^ self.FLIP_MASK
-                    else:
-                        element = self._data.get_at(i)
-                    bits += f"{element:0{self.BITS_PER_ELEMENT}b}"
+
+            for i in range(1, self._data.get_size() - 1):
+                if self._is_flipped:
+                    element = self._data.get_at(i) ^ self.FLIP_MASK
+                else:
+                    element = self._data.get_at(i)
+                bits += f"{element:0{self.BITS_PER_ELEMENT}b}"
 
         if self._data.get_size() > 1:
             # Add bits in the last element
@@ -257,8 +255,6 @@ class BitVector:
             dist = self._size
         elif dist < -self._size:
             dist = -self._size
-        else:
-            return
 
         while dist > 0:
             self._pop_from_logical_left()
@@ -283,8 +279,6 @@ class BitVector:
             dist = dist % self._size
         elif dist < 0:
             dist = dist % self._size - self._size
-        else:
-            return
 
         while dist > 0:
             bit = self._pop_from_logical_left()

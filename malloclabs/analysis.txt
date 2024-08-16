@@ -9,6 +9,10 @@ structure works, including any variables or data maintained internally.
 This should take about four sentences.
 
 Answer:
+The data structure I used is a trie, which contains TrieNode (i.e. root and its children, and children's children,...). 
+Except the root , each TrieNode stands for a nucleotide in a kmer. 
+TrieNode records the nucleotide ('A', 'C', 'G', 'T'), occurance (associated with duplicate kmer), code (easy for indexing, A, C, G, T is 0, 1, 2, 3 respectively), depth (easy for the base case during recursion), chilren, and parent.
+When inserting or deleting, just add, remote the nodes or change the nodes' occurance. When count, using the node's occurance (parent's occurance is always equal to the sum of all children's occurances).
 
 ----
 
@@ -18,7 +22,11 @@ for the `count` query? If so, how? Explain.
 This should take about five sentences.
 
 Answer
-
+`countgeq(kmer)`'s worst-case happens when kmer exist in the trie and kmer == 'AAAA'. That means it needs to count the occurances of the sibling nodes of all nodes associated with `kmer`, and `kmer` nodes itself.
+It should traverse 4 * k nodes (k is the length of kmer. 4 is ACGA, slibings and itself). However, k is constant and the occurances are already recorded. Therefore, it takes constant times. The worst-case time complexity is O(1).
+They are the same. They do constant operations disregarding the number of kmers in the trie.
+`count(kmer)`'s worst-case happens when `kmer` exists in the trie. That means it needs to traverse k nodes to the bottom (depth = k). If `kmer` not exists, it needs to traverse less than k nodes. But they are both constant time.
+So worst-case time complexity is O(1).
 ----
 
 Question 3: What is the worst-case time complexity for supporting the
@@ -26,4 +34,9 @@ Question 3: What is the worst-case time complexity for supporting the
 analysis.
 This should take about five sentences. Your analysis can be in plain English.
 
+A: O(1).
+How to solve?
+    First I get the last two nucleotides of the given kmer and use `if` statement to get their complement nucleotides (notated as `A`, `B`).
+    Two nucleotides and their corresponding four `if` statement (A, C, G, or T?) indicates eight "choose" operations, which can be regarded as constant time.
+    Use the trie, get the root's child `A`, and `A`'s child `B`, return `B`'s `occurance`, the depth of `B` is always 2, which can be regarded as constant time.
 ---

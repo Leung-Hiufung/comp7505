@@ -80,7 +80,7 @@ def main_character(instring: list[int]) -> int:
 class BitSet:
     def __init__(self, size: int):
         self.size = size
-        self.bitvector = [0] * (self.size // 64 + 1)  # 每个元素是一个64位的int
+        self.bitvector = [0] * (self.size // 64 + 1)
 
     def add(self, value: int) -> None:
         index = value // 64
@@ -262,48 +262,88 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     #     bob += bob_pick * (bob_pick & 1)
     #     i -= 2
 
-    evens = [num for num in numbers if num & 1 == 0]
-    odds = [num for num in numbers if num & 1 == 1]
+    # evens = [num for num in numbers if num & 1 == 0]
+    # odds = [num for num in numbers if num & 1 == 1]
 
-    evens_length = len(evens)
-    odds_length = len(odds)
-    # odd numbers and even numbers sort respectively
-    quick_sort(evens, 0, evens_length)
-    quick_sort(odds, 0, odds_length)
+    # evens_length = len(evens)
+    # odds_length = len(odds)
+    # # odd numbers and even numbers sort respectively
+    # quick_sort(evens, 0, evens_length)
+    # quick_sort(odds, 0, odds_length)
 
-    even_index = evens_length - 1  # the last element index in evens
-    odd_index = odds_length - 1  # the last element index in odds
+    # even_index = evens_length - 1  # the last element index in evens
+    # odd_index = odds_length - 1  # the last element index in odds
+
+    # alice_score = 0
+    # bob_score = 0
+    # turn = 0  # 0 is Alice's turn , 1 is Bob's turn
+
+    # # even/odd index == 1: no element in the array, i.e. none
+    # # even/odd index > -1: array has element, i.e. not none
+    # while even_index > -1 or odd_index > -1:
+    #     # Alice turn
+    #     if turn == 0:
+    #         if even_index > -1 and (
+    #             odd_index == -1 or evens[even_index] >= odds[odd_index]
+    #         ):
+    #             alice_score += evens[even_index]
+    #             # Pop the element
+    #             evens[even_index] = None
+    #             even_index -= 1
+    #         elif odd_index > -1:
+    #             odds[odd_index] = None
+    #             odd_index -= 1
+    #     # Bob turn
+    #     else:
+    #         if odd_index > -1 and (
+    #             even_index == -1 or odds[odd_index] >= evens[even_index]
+    #         ):
+    #             bob_score += odds[odd_index]
+    #             odds[odd_index] = None
+    #             odd_index -= 1
+    #         elif even_index > -1:
+    #             evens[even_index] = None
+    #             even_index -= 1
+    #     turn ^= 1
+
+    length = len(numbers)
+    middle = length // 2
+    quick_sort(numbers, 0, middle)
+    quick_sort(numbers, middle, length)
+
+    left = middle - 1  # the last element index in evens
+    right = length - 1  # the last element index in odds
 
     alice_score = 0
     bob_score = 0
     turn = 0  # 0 is Alice's turn , 1 is Bob's turn
+    left_end = -1
+    right_end = middle - 1
 
-    # even/odd index == 1: no element in the array, i.e. none
-    # even/odd index > -1: array has element, i.e. not none
-    while even_index > -1 or odd_index > -1:
-        # Alice turn
-        if turn == 0:
-            if even_index > -1 and (
-                odd_index == -1 or evens[even_index] >= odds[odd_index]
-            ):
-                alice_score += evens[even_index]
-                # Pop the element
-                evens[even_index] = None
-                even_index -= 1
-            elif odd_index > -1:
-                odds[odd_index] = None
-                odd_index -= 1
-        # Bob turn
+    # left/right == left/right_end: no non-added element in the left/right,
+    while left > left_end or right > right_end:
+        # Two sides has numbers
+        if left > left_end and right > right_end:
+            if numbers[left] > numbers[right]:
+                picked = numbers[left]
+                left -= 1
+            else:
+                picked = numbers[right]
+                right -= 1
+        # Only left side has element
+        elif left > left_end and right == right_end:
+            picked = numbers[left]
+            left -= 1
+        # Only right side has element
         else:
-            if odd_index > -1 and (
-                even_index == -1 or odds[odd_index] >= evens[even_index]
-            ):
-                bob_score += odds[odd_index]
-                odds[odd_index] = None
-                odd_index -= 1
-            elif even_index > -1:
-                evens[even_index] = None
-                even_index -= 1
+            picked = numbers[right]
+            right -= 1
+
+        if turn == 0:
+            alice_score += picked * ((picked & 1) ^ 1)
+        else:
+            bob_score += picked * (picked & 1)
+
         turn ^= 1
 
     if alice_score > bob_score:

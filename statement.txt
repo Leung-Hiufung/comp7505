@@ -1,1 +1,2 @@
-test_
+In this assignment, I googled the concept of bitvectors and tries. I built dumb bit list to validate the bitvectors and use python built-in list to implement the KmerStore during tests so that I can check if the answer is the same. I do not use genAI.
+I built a function in a few files called `binary_length()` to replace `len()` with the restriction of using len() in some places. The idea is inspired from Tut W3 Q4. Avoiding linear iteration, make it faster.

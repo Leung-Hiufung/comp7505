@@ -9,7 +9,7 @@ from typing import Any
 
 class DynamicArray:
     def __init__(self) -> None:
-        self._capacity = 256
+        self._capacity = 2
         self._array = [None] * self._capacity
         self._size = 0
         self._is_reversed = False

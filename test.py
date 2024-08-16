@@ -1,65 +1,54 @@
-def number_game(numbers: list[int]) -> tuple[str, int]:
+def compatible(kmer: str) -> int:
     """
-    @numbers@ is an unordered array of integers. The array is guaranteed to be of even length.
-    Return a tuple consisting of the winner's name and the winner's score assuming that both play optimally.
-    "Optimally" means that each player makes moves that maximise their chance of winning
-    and minimise opponent's chance of winning.
-    You are ALLOWED to use a tuple in your return here, like: return (x, y)
-    Possible string values are "Alice", "Bob", and "Tie"
-    Limitations:
-            @numbers@ may contain up to 300'000 elements.
-            Each element is in range 0 <= numbers[i] <= 10^16
-
-    Examples:
-    number_game([5, 2, 7, 3]) == ("Bob", 5)
-    number_game([3, 2, 1, 0]) == ("Tie", 0)
-    number_game([2, 2, 2, 2]) == ("Alice", 4)
+    Given a k-mer, return the total number of compatible
+    k-mers. You will be using the two suffix characters
+    of the input k-mer to compare against the first two
+    characters of all other k-mers.
+    Time complexity for full marks: O(1) :-)
     """
+    sequences = [
+        "AA",
+        "AC",
+        "AG",
+        "AT",
+        "CA",
+        "CC",
+        "CG",
+        "CT",
+        "GA",
+        "GC",
+        "GT",
+        "GT",
+        "TA",
+        "TC",
+        "TG",
+        "TT",
+    ]
+    suffix = kmer[-2:]
 
-    # Separate even and odd numbers
-    evens = [num for num in numbers if num % 2 == 0]
-    odds = [num for num in numbers if num % 2 != 0]
+    low, high = 0, 16
+    while low < high:
+        middle = (low + high) // 2
+        if sequences[middle] == suffix:
+            break
+        elif sequences[middle] > suffix:
+            high = middle
+        else:
+            low = middle
+    prefix = sequences[15 - middle]
 
-    # Sort both lists in descending order
-    evens.sort(reverse=True)
-    odds.sort(reverse=True)
-
-    alice_score = 0
-    bob_score = 0
-
-    # Alice starts first
-    turn = 0
-
-    while evens or odds:
-        if turn % 2 == 0:  # Alice's turn
-            if evens and (not odds or evens[0] >= odds[0]):
-                alice_score += evens.pop(0)
-            elif odds:
-                odds.pop(0)
-        else:  # Bob's turn
-            if odds and (not evens or odds[0] >= evens[0]):
-                bob_score += odds.pop(0)
-            elif evens:
-                evens.pop(0)
-        turn += 1
-
-    if alice_score > bob_score:
-        return ("Alice", alice_score)
-    elif bob_score > alice_score:
-        return ("Bob", bob_score)
-    else:
-        return ("Tie", alice_score)
+    # suffix = [kmer[-2], kmer[-1]]
+    # prefix = [None] * 2
+    # for i in range(2):
+    #     if suffix[i] == "A":
+    #         prefix[i] = "T"
+    #     elif suffix[i] == "C":
+    #         prefix[i] = "G"
+    #     elif suffix[i] == "G":
+    #         prefix[i] = "C"
+    #     else:
+    #         prefix[i] = "A"
+    return prefix
 
 
-# Example usage
-print(number_game([5, 2, 7, 3]))  # Output: ("Bob", 5)
-print(number_game([3, 2, 1, 0]))  # Output: ("Tie", 0)
-print(number_game([2, 2, 2, 2]))  # Output: ("Alice", 4)
-print(number_game([3, 1, 6, 2, 4, 7, 1, 1]))  # Output: ("Alice", 6)
-
-
-print(number_game([5, 2, 7, 3]))
-assert number_game([5, 2, 7, 3]) == ("Bob", 5)
-assert number_game([3, 2, 1, 0]) == ("Tie", 0)
-assert number_game([2, 2, 2, 2]) == ("Alice", 4)
-assert number_game([3, 1, 6, 2, 4, 7, 1, 1]) == ("Alice", 6)
+print(compatible("AGCTTTG"))
