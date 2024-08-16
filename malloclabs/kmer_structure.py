@@ -196,62 +196,62 @@ class KmerStore:
         else:
             raise ValueError
 
-    def batch_delete_t(self, kmers: list[str]) -> None:
-        ks = []
-        for kmer in self.kmers:
-            if kmer not in kmers:
-                ks.append(kmer)
-        self.kmers = ks
+    # def batch_delete_t(self, kmers: list[str]) -> None:
+    #     ks = []
+    #     for kmer in self.kmers:
+    #         if kmer not in kmers:
+    #             ks.append(kmer)
+    #     self.kmers = ks
 
-    def feq_geq_t(self, m: int) -> list[str]:
-        k = {}
-        result = []
-        for kmer in self.kmers:
-            feq = k.get(kmer)
-            if feq is None:
-                k[kmer] = 1
-            else:
-                k[kmer] += 1
-        for kmer in k:
-            if k[kmer] >= m:
-                result.append(kmer)
-        return result
+    # def feq_geq_t(self, m: int) -> list[str]:
+    #     k = {}
+    #     result = []
+    #     for kmer in self.kmers:
+    #         feq = k.get(kmer)
+    #         if feq is None:
+    #             k[kmer] = 1
+    #         else:
+    #             k[kmer] += 1
+    #     for kmer in k:
+    #         if k[kmer] >= m:
+    #             result.append(kmer)
+    #     return result
 
-    def count_t(self, kmer: str) -> int:
-        count = 0
-        for k in self.kmers:
-            if k == kmer:
-                count += 1
-        return count
+    # def count_t(self, kmer: str) -> int:
+    #     count = 0
+    #     for k in self.kmers:
+    #         if k == kmer:
+    #             count += 1
+    #     return count
 
-    def count_geq_t(self, kmer: str) -> int:
-        count = 0
-        ks = []
-        for k in self.kmers:
-            if k >= kmer:
-                count += 1
-                ks.append(k)
-        # print(sorted(ks))
-        return count
+    # def count_geq_t(self, kmer: str) -> int:
+    #     count = 0
+    #     ks = []
+    #     for k in self.kmers:
+    #         if k >= kmer:
+    #             count += 1
+    #             ks.append(k)
+    #     # print(sorted(ks))
+    #     return count
 
-    def compatible_t(self, kmer: str) -> int:
-        suffix = kmer[-2:]
-        prefix = [None] * 2
-        for i in range(2):
-            if suffix[i] == "A":
-                prefix[i] = "T"
-            elif suffix[i] == "C":
-                prefix[i] = "G"
-            elif suffix[i] == "G":
-                prefix[i] = "C"
-            elif suffix[i] == "T":
-                prefix[i] = "A"
+    # def compatible_t(self, kmer: str) -> int:
+    #     suffix = kmer[-2:]
+    #     prefix = [None] * 2
+    #     for i in range(2):
+    #         if suffix[i] == "A":
+    #             prefix[i] = "T"
+    #         elif suffix[i] == "C":
+    #             prefix[i] = "G"
+    #         elif suffix[i] == "G":
+    #             prefix[i] = "C"
+    #         elif suffix[i] == "T":
+    #             prefix[i] = "A"
 
-        count = 0
-        for k in self.kmers:
-            if k[1] == prefix[1] and k[0] == prefix[0]:
-                count += 1
-        return count
+    #     count = 0
+    #     for k in self.kmers:
+    #         if k[1] == prefix[1] and k[0] == prefix[0]:
+    #             count += 1
+    #     return count
 
 
 class TrieNode:
