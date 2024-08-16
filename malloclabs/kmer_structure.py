@@ -47,102 +47,110 @@ class KmerStore:
         with open(infile) as file:
             array = file.read().split("\n")
 
-        num_sequences = binary_length(array) - 1
-        # Validate the file
-        # for i in range(1, num_sequences):
-        #     if binary_length(array[i - 1]) != binary_length(array[i]):
-        #         raise IOError("Each line has different length in file.")
+        kmers = []
 
-        length_sequence = binary_length(array[0]) - 1  # '\n' included
-        # Validate the length of each line
-        # if length_sequence < 1:
-        #     raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
-
-        num_kmers_line = length_sequence - self._k + 1
-        num_kmers = num_kmers_line * num_sequences
-        kmers = [None] * num_kmers
-
-        kmer_index = 0
-        while kmer_index < num_kmers:
-            for sequence_index in range(num_sequences):
-                sequence = array[sequence_index]
-                for index in range(num_kmers_line):
-                    kmer = ""
-                    for i in range(self._k):
-                        kmer += sequence[index + i]
-                    kmers[kmer_index] = kmer
-                    kmer_index += 1
-
+        for line in array[:-1]:
+            for i in range(len(array[0]) - self._k + 1):
+                kmers.append(line[i : i + self._k])
         self.batch_insert(kmers)
         self.kmers = kmers
+        # num_sequences = binary_length(array) - 1
+        # # Validate the file
+        # # for i in range(1, num_sequences):
+        # #     if binary_length(array[i - 1]) != binary_length(array[i]):
+        # #         raise IOError("Each line has different length in file.")
+
+        # length_sequence = binary_length(array[0]) - 1  # '\n' included
+        # # Validate the length of each line
+        # # if length_sequence < 1:
+        # #     raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
+
+        # num_kmers_line = length_sequence - self._k + 1
+        # num_kmers = num_kmers_line * num_sequences
+        # kmers = [None] * num_kmers
+
+        # kmer_index = 0
+        # while kmer_index < num_kmers:
+        #     for sequence_index in range(num_sequences):
+        #         sequence = array[sequence_index]
+        #         for index in range(num_kmers_line):
+        #             kmer = ""
+        #             for i in range(self._k):
+        #                 kmer += sequence[index + i]
+        #             kmers[kmer_index] = kmer
+        #             kmer_index += 1
+
+        # self.batch_insert(kmers)
+        # self.kmers = kmers
         # for k in kmers:
         #     print(k)
 
-    # def batch_delete_t(self, kmers: list[str]) -> None:
-    #     ks = []
-    #     for kmer in self.kmers:
-    #         if kmer not in kmers:
-    #             ks.append(kmer)
-    #     self.kmers = ks
+    def batch_delete_t(self, kmers: list[str]) -> None:
+        ks = []
+        for kmer in self.kmers:
+            if kmer not in kmers:
+                ks.append(kmer)
+        self.kmers = ks
 
-    # def feq_geq_t(self, m: int) -> list[str]:
-    #     k = {}
-    #     result = []
-    #     for kmer in self.kmers:
-    #         feq = k.get(kmer)
-    #         if feq is None:
-    #             k[kmer] = 1
-    #         else:
-    #             k[kmer] += 1
-    #     for kmer in k:
-    #         if k[kmer] >= m:
-    #             result.append(kmer)
-    #     return result
+    def feq_geq_t(self, m: int) -> list[str]:
+        k = {}
+        result = []
+        for kmer in self.kmers:
+            feq = k.get(kmer)
+            if feq is None:
+                k[kmer] = 1
+            else:
+                k[kmer] += 1
+        for kmer in k:
+            if k[kmer] >= m:
+                result.append(kmer)
+        return result
 
-    # def count_t(self, kmer: str) -> int:
-    #     count = 0
-    #     for k in self.kmers:
-    #         if k == kmer:
-    #             count += 1
-    #     return count
+    def count_t(self, kmer: str) -> int:
+        count = 0
+        for k in self.kmers:
+            if k == kmer:
+                count += 1
+        return count
 
-    # def count_geq_t(self, kmer: str) -> int:
-    #     count = 0
-    #     ks = []
-    #     for k in self.kmers:
-    #         if k >= kmer:
-    #             count += 1
-    #             ks.append(k)
-    #     # print(sorted(ks))
-    #     return count
+    def count_geq_t(self, kmer: str) -> int:
+        count = 0
+        ks = []
+        for k in self.kmers:
+            if k >= kmer:
+                count += 1
+                ks.append(k)
+        # print(sorted(ks))
+        return count
 
-    # def compatible_t(self, kmer: str) -> int:
-    #     suffix = kmer[-2:]
-    #     prefix = [None] * 2
-    #     for i in range(2):
-    #         if suffix[i] == "A":
-    #             prefix[i] = "T"
-    #         elif suffix[i] == "C":
-    #             prefix[i] = "G"
-    #         elif suffix[i] == "G":
-    #             prefix[i] = "C"
-    #         elif suffix[i] == "T":
-    #             prefix[i] = "A"
+    def compatible_t(self, kmer: str) -> int:
+        suffix = kmer[-2:]
+        prefix = [None] * 2
+        for i in range(2):
+            if suffix[i] == "A":
+                prefix[i] = "T"
+            elif suffix[i] == "C":
+                prefix[i] = "G"
+            elif suffix[i] == "G":
+                prefix[i] = "C"
+            elif suffix[i] == "T":
+                prefix[i] = "A"
 
-    #     count = 0
-    #     for k in self.kmers:
-    #         if k[1] == prefix[1] and k[0] == prefix[0]:
-    #             count += 1
-    #     return count
+        count = 0
+        for k in self.kmers:
+            if k[1] == prefix[1] and k[0] == prefix[0]:
+                count += 1
+        return count
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
         Given a list of k-mers, insert them (maintaining
         duplicates) in O(n) time.
         """
+
         for kmer in kmers:
-            # if not self._is_valid_kmer(kmer):
-            #     raise ValueError(self._kmer_error_message)
+            #     # if not self._is_valid_kmer(kmer):
+            #     #     raise ValueError(self._kmer_error_message)
             self._trie.insert(kmer)
 
     def batch_delete(self, kmers: list[str]) -> None:
@@ -164,13 +172,13 @@ class KmerStore:
         """
 
         root = self._trie.get_root()
-        array = Array(4**self._k)
+        array = []
         # array = [None] * (4**self._k)
         self._freq_geq_recursion(m, root, "", array)
-        return array.to_python_list()
+        return array
 
     def _freq_geq_recursion(
-        self, m: int, node: Node, kmer: str, array: DynamicArray
+        self, m: int, node: Node, kmer: str, array: list[str]
     ) -> None:
         # base case 1: reaches the depth
         if node.get_depth() == self._k:
@@ -259,55 +267,40 @@ class KmerStore:
                 prefix[i] = "C"
             else:
                 prefix[i] = "A"
-        # suffix = kmer[-2] + kmer[-1]
-        # if suffix == 'AA':
-        #     prefix = 'TT'
-        # elif suffix == 'AC':
-        #     prefix = 'TG'
-        # elif suffix == 'AG':
-        #     prefix = 'TC'
-        # elif suffix == "AT":
-        #     prefix = "TG"
-        # elif suffix == "AC":
-        #     prefix = "TG"
-        # elif suffix == "AC":
-        #     prefix = "TG"
-        # elif suffix == "AC":
-        #     prefix = "TG"
         return self._trie.get_occurance(prefix[0] + prefix[1])
 
     # Any other functionality you may need
 
-    def _is_valid_kmer(self, kmer: str) -> bool:
-        length = binary_length(kmer)
-        for char in kmer:
-            if not (char == "A" or char == "C" or char == "G" or char == "T"):
-                return False
+    # def _is_valid_kmer(self, kmer: str) -> bool:
+    #     length = binary_length(kmer)
+    #     for char in kmer:
+    #         if not (char == "A" or char == "C" or char == "G" or char == "T"):
+    #             return False
 
-        return length == self._k
+    #     return length == self._k
 
 
-class Array:
+# class Array:
 
-    def __init__(self, size: int = 100) -> None:
-        self._array = [None] * size
-        self._size = 0
+#     def __init__(self, size: int = 100) -> None:
+#         self._array = [None] * size
+#         self._size = 0
 
-    def __getitem__(self, index: int) -> int:
-        return self._array[index]
+#     def __getitem__(self, index: int) -> int:
+#         return self._array[index]
 
-    def __setitem__(self, index: int, number: int) -> None:
-        self._array[index] = number
+#     def __setitem__(self, index: int, number: int) -> None:
+#         self._array[index] = number
 
-    def to_python_list(self) -> list[int]:
-        array = [None] * self._size
-        for i in range(self._size):
-            array[i] = self[i]
-        return array
+#     def to_python_list(self) -> list[int]:
+#         array = [None] * self._size
+#         for i in range(self._size):
+#             array[i] = self[i]
+#         return array
 
-    def append(self, number: int) -> None:
-        self._array[self._size] = number
-        self._size += 1
+#     def append(self, number: int) -> None:
+#         self._array[self._size] = number
+#         self._size += 1
 
 
 class Node:
@@ -382,10 +375,10 @@ class Node:
     def get_occurance(self) -> int:
         return self._occurance
 
-    def increase_occurance(self) -> None:
-        self._occurance += 1
+    def increase_occurance(self, num: int = 1) -> None:
+        self._occurance += num
 
-    def reduce_occurance(self, num: int) -> None:
+    def reduce_occurance(self, num: int = 1) -> None:
         self._occurance -= num
 
     def get_depth(self) -> int:
@@ -454,6 +447,9 @@ class Trie:
             parent = node
         return parent.get_occurance()
 
+    def batch_insert(self, kmers: list[str]) -> None:
+        pass
+
     def insert(self, kmer: str) -> None:
         node = self._root
         node.increase_occurance()
@@ -467,10 +463,8 @@ class Trie:
             node.increase_occurance()
 
     def delete(self, kmer: str) -> None:
-        if kmer == "GTCG":
-            pass
         node = self._root
-        length = binary_length(kmer)
+        length = len(kmer)
 
         for nucleotide in kmer:
             child = node.get_child(nucleotide)

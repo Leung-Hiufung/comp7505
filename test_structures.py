@@ -469,9 +469,9 @@ def test_bitvector():
     is1 = False
     bitvector.flip_all_bits()
     bitvector.reverse()
-    # for i in range(1000):
-    #     bitvector.append(1)
-    #     is1 = not is1
+    for i in range(200):
+        bitvector.append(1)
+        is1 = not is1
 
     print(bitvector)
     print("append 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1")
@@ -479,18 +479,41 @@ def test_bitvector():
         bitvector.append(bit)
     print(bitvector)
 
-    for i in range(450):
-        if i > 446:
-            pass
-        print(
-            i,
-            bitvector._data._zero_index,
-            bitvector._data._size,
-            bitvector._data._array,
-        )
-        bit = bitvector._pop_from_logical_right()
-        bitvector.prepend(bit)
-    bitvector.shift(-666)
+    # for i in range(450):
+    #     if i > 446:
+    #         pass
+    #     print(
+    #         i,
+    #         bitvector._data._zero_index,
+    #         bitvector._data._size,
+    #         bitvector._data._array,
+    #     )
+    #     bit = bitvector._pop_from_logical_right()
+    #     bitvector.prepend(bit)
+    bitvector.rotate(-6)
+    print(bitvector)
+    bitvector.rotate(6)
+    print(bitvector)
+    bitvector.flip_all_bits()
+    print(bitvector)
+    bitvector.shift(5)
+    print(bitvector)
+    bitvector.append(1)
+    bitvector.prepend(0)
+    print(bitvector)
+    bitvector.flip_all_bits()
+    print(bitvector)
+    bitvector.append(1)
+    bitvector.prepend(0)
+    print(bitvector)
+    bitvector.reverse()
+    print(bitvector)
+    bitvector.append(1)
+    bitvector.append(1)
+    bitvector.prepend(1)
+    print(bitvector)
+    bitvector.rotate(bitvector.get_size() * 1000 + 11)
+    print(bitvector)
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]

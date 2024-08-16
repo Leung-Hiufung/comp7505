@@ -265,8 +265,8 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     evens = [num for num in numbers if num & 1 == 0]
     odds = [num for num in numbers if num & 1 == 1]
 
-    evens_length = binary_length(evens)
-    odds_length = binary_length(odds)
+    evens_length = len(evens)
+    odds_length = len(odds)
     # odd numbers and even numbers sort respectively
     quick_sort(evens, 0, evens_length)
     quick_sort(odds, 0, odds_length)
@@ -344,7 +344,7 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
 
     # YOUR CODE GOES HERE
 
-    length = binary_length(poles)
+    length = len(poles)
     quick_sort(poles, 0, length)
 
     # Ensure the first light covers the start of the road, compare (0, [0])
@@ -427,7 +427,7 @@ def binary_length(array: list[Any]) -> int:
 
 def heap_sort(arr: list[int]) -> None:
     """"""
-    last_index = binary_length(arr) - 1
+    last_index = len(arr) - 1
 
     def holds_heap(index: int) -> None:
 
