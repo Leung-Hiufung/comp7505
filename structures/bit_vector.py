@@ -253,6 +253,13 @@ class BitVector:
         """
         if self._size == 0:
             return
+        if dist > self._size:
+            dist = self._size
+        elif dist < -self._size:
+            dist = -self._size
+        else:
+            return
+
         while dist > 0:
             self._pop_from_logical_left()
             self.append(0)
@@ -272,6 +279,13 @@ class BitVector:
         """
         if self._size < 2:
             return
+        if dist > 0:
+            dist = dist % self._size
+        elif dist < 0:
+            dist = dist % self._size - self._size
+        else:
+            return
+
         while dist > 0:
             bit = self._pop_from_logical_left()
             self.append(bit)
