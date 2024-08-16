@@ -43,21 +43,20 @@ class KmerStore:
         Given a path to an input file, break the sequences into
         k-mers and load them into your data structure.
         """
-        array = DynamicArray()
+        # array = DynamicArray()
         with open(infile) as file:
-            for line in file:
-                array.append(line)
+            array = file.read().split("\n")
 
-        num_sequences = array.get_size()
+        num_sequences = binary_length(array) - 1
         # Validate the file
-        for i in range(1, num_sequences):
-            if binary_length(array[i - 1]) != binary_length(array[i]):
-                raise IOError("Each line has different length in file.")
+        # for i in range(1, num_sequences):
+        #     if binary_length(array[i - 1]) != binary_length(array[i]):
+        #         raise IOError("Each line has different length in file.")
 
         length_sequence = binary_length(array[0]) - 1  # '\n' included
         # Validate the length of each line
-        if length_sequence < 1:
-            raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
+        # if length_sequence < 1:
+        #     raise ValueError(f"Sequence is too short to generate a {self._k}-mer.")
 
         num_kmers_line = length_sequence - self._k + 1
         num_kmers = num_kmers_line * num_sequences
@@ -165,7 +164,8 @@ class KmerStore:
         """
 
         root = self._trie.get_root()
-        array = DynamicArray()
+        array = Array(4**self._k)
+        # array = [None] * (4**self._k)
         self._freq_geq_recursion(m, root, "", array)
         return array.to_python_list()
 
@@ -178,6 +178,9 @@ class KmerStore:
                 return
             else:
                 array.append(kmer)
+                # array[index] = kmer
+                # index += 1
+                # return index
 
         for nucleotide in self.NUCLEOTIDES:
             child = node.get_child(nucleotide)
@@ -214,7 +217,6 @@ class KmerStore:
         """
         # if not self._is_valid_kmer(kmer):
         #     raise ValueError(self._kmer_error_message)
-
         count = 0
         node = self._trie.get_root()
 
@@ -248,8 +250,6 @@ class KmerStore:
 
         suffix = [kmer[-2], kmer[-1]]
         prefix = [None] * 2
-        suffix[0] = kmer[-2]
-        suffix[1] = kmer[-1]
         for i in range(2):
             if suffix[i] == "A":
                 prefix[i] = "T"
@@ -259,6 +259,21 @@ class KmerStore:
                 prefix[i] = "C"
             else:
                 prefix[i] = "A"
+        # suffix = kmer[-2] + kmer[-1]
+        # if suffix == 'AA':
+        #     prefix = 'TT'
+        # elif suffix == 'AC':
+        #     prefix = 'TG'
+        # elif suffix == 'AG':
+        #     prefix = 'TC'
+        # elif suffix == "AT":
+        #     prefix = "TG"
+        # elif suffix == "AC":
+        #     prefix = "TG"
+        # elif suffix == "AC":
+        #     prefix = "TG"
+        # elif suffix == "AC":
+        #     prefix = "TG"
         return self._trie.get_occurance(prefix[0] + prefix[1])
 
     # Any other functionality you may need
@@ -270,6 +285,29 @@ class KmerStore:
                 return False
 
         return length == self._k
+
+
+class Array:
+
+    def __init__(self, size: int = 100) -> None:
+        self._array = [None] * size
+        self._size = 0
+
+    def __getitem__(self, index: int) -> int:
+        return self._array[index]
+
+    def __setitem__(self, index: int, number: int) -> None:
+        self._array[index] = number
+
+    def to_python_list(self) -> list[int]:
+        array = [None] * self._size
+        for i in range(self._size):
+            array[i] = self[i]
+        return array
+
+    def append(self, number: int) -> None:
+        self._array[self._size] = number
+        self._size += 1
 
 
 class Node:
