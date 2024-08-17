@@ -84,10 +84,29 @@ class KmerStore:
         Time complexity for full marks: O(n)
         """
 
+        # root = self._trie._root
+        # array = []
+        # if root.get_occurance() >= m:
+        #     self._freq_geq_recursion(m, root, "", array)
+        # return array
         root = self._trie._root
         array = []
-        if root.get_occurance() >= m:
-            self._freq_geq_recursion(m, root, "", array)
+        stack = [[root, ""]]
+        while stack:
+            popped = stack.pop()
+            node = popped[0]
+            kmer = popped[1]
+
+            if node._depth == self._k:
+                if node._occurance >= m:
+                    array.append(kmer)
+                continue
+
+            for i in range(3, -1, -1):
+                child = node._child[i]
+                if child is not None and child._occurance >= m:
+                    stack.append([child, kmer + child._nucleotide])
+
         return array
 
     def _freq_geq_recursion(
@@ -162,7 +181,15 @@ class KmerStore:
 
         first = self._nucleotide_hash(kmer[-2])
         second = self._nucleotide_hash(kmer[-1])
-        return self._trie._root._child[first]._child[second]._occurance
+
+        first_node = self._trie._root._child[3 - first]
+        if first_node is not None:
+            second_node = first_node._child[3 - second]
+            if second_node is not None:
+                return second_node._occurance
+
+        return 0
+        # suffix = kmer[-2:]
         # prefix = [None] * 2
         # for i in range(2):
         #     if suffix[i] == "A":

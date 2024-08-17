@@ -579,6 +579,11 @@ def test_kmer_store_build(filepath: str):
         "TCGC",
     ]
 
+    for kmer in kmers:
+        assert store.compatible(kmer) == store.compatible_t(kmer)
+
+    for i in range(100):
+        assert str(sorted(store.freq_geq(i))) == str(sorted(store.feq_geq_t(i)))
     store.batch_delete(kmers)
     store.batch_delete_t(kmers)
     print("TGAG" in store.kmers)
