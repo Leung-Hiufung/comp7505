@@ -59,15 +59,6 @@ def main_character(instring: list[int]) -> int:
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
 
-    # bitvector = BitVector()
-    # bitvector.initialise(0, 2**32)
-
-    # for index, num in enumerate(instring):
-    #     if bitvector.get_at(num) == 0:
-    #         bitvector.set_at(num)
-    #     else:
-    #         return index
-    # return -1
     bitset = BitSet(1 << 32)
     for index, value in enumerate(instring):
         if bitset.contains(value):
@@ -78,6 +69,11 @@ def main_character(instring: list[int]) -> int:
 
 
 class BitSet:
+    """
+    A simplified bitvector to support `main_character()`.
+    No extra features make it faster.
+    """
+
     def __init__(self, size: int):
         self.size = size
         self.bitvector = [0] * (self.size // 64 + 1)
@@ -186,17 +182,8 @@ def k_cool(k: int, n: int) -> int:
     # 0, 1, 10, 2, 20, 21, 210, 3, 30, 31, 310, 32, 320, 321, 3210.
     # Use binary to encode the number, 1 means occur, 0 mean absence
     # **** each digit stands for the existence of the power (3,2,1,0)
-    # 0000, 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111
-    # exactly encodes to binary number 0-15
-
-    # addend_amount = int(math.log2(n)) + 1
-    # binary_str = f"{(n):0b}"
-    # answer = 0
-    # for index, char in enumerate(binary_str):
-    #     bit = 0 if char == "0" else 1
-    #     answer += bit * k ** (addend_amount - index - 1)
-    # return answer % MODULUS
-
+    # 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111
+    # exactly encodes to binary number 1-15
     result = 0
     power = 1  # power is the result of k^n, initial is k^0 =1
     while n > 0:
@@ -210,7 +197,6 @@ def k_cool(k: int, n: int) -> int:
         power %= MODULUS
         # n divided by 2
         n >>= 1
-
     return result
 
 
@@ -249,65 +235,10 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     """
 
     # YOUR CODE GOES HERE
-    # alice = 0
-    # bob = 0
-
-    # length = binary_length(numbers)
-    # quick_sort(numbers, 0, length)
-    # i = length - 1
-    # while i > 0:
-    #     alice_pick = numbers[i]
-    #     bob_pick = numbers[i - 1]
-    #     alice += alice_pick * ((alice_pick & 1) ^ 1)
-    #     bob += bob_pick * (bob_pick & 1)
-    #     i -= 2
-
-    # evens = [num for num in numbers if num & 1 == 0]
-    # odds = [num for num in numbers if num & 1 == 1]
-
-    # evens_length = len(evens)
-    # odds_length = len(odds)
-    # # odd numbers and even numbers sort respectively
-    # quick_sort(evens, 0, evens_length)
-    # quick_sort(odds, 0, odds_length)
-
-    # even_index = evens_length - 1  # the last element index in evens
-    # odd_index = odds_length - 1  # the last element index in odds
-
-    # alice_score = 0
-    # bob_score = 0
-    # turn = 0  # 0 is Alice's turn , 1 is Bob's turn
-
-    # # even/odd index == 1: no element in the array, i.e. none
-    # # even/odd index > -1: array has element, i.e. not none
-    # while even_index > -1 or odd_index > -1:
-    #     # Alice turn
-    #     if turn == 0:
-    #         if even_index > -1 and (
-    #             odd_index == -1 or evens[even_index] >= odds[odd_index]
-    #         ):
-    #             alice_score += evens[even_index]
-    #             # Pop the element
-    #             evens[even_index] = None
-    #             even_index -= 1
-    #         elif odd_index > -1:
-    #             odds[odd_index] = None
-    #             odd_index -= 1
-    #     # Bob turn
-    #     else:
-    #         if odd_index > -1 and (
-    #             even_index == -1 or odds[odd_index] >= evens[even_index]
-    #         ):
-    #             bob_score += odds[odd_index]
-    #             odds[odd_index] = None
-    #             odd_index -= 1
-    #         elif even_index > -1:
-    #             evens[even_index] = None
-    #             even_index -= 1
-    #     turn ^= 1
 
     length = len(numbers)
     middle = length // 2
+    # Sort two part seperately, make it faster.
     quick_sort(numbers, 0, middle)
     quick_sort(numbers, middle, length)
 
@@ -320,6 +251,7 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     left_end = -1
     right_end = middle - 1
 
+    # Always pick the biggest number, like the final merge step in the merge sort
     # left/right == left/right_end: no non-added element in the left/right,
     while left > left_end or right > right_end:
         # Two sides has numbers
@@ -427,15 +359,6 @@ def quick_sort(array: list[int], low: int, high: int) -> None:
     quick_sort(array, pivot + 1, high)
 
 
-# def swap(array, index1, index2):
-#     """
-#     Swap two values with the given two indexes.
-#     """
-#     temp = array[index1]
-#     array[index1] = array[index2]
-#     array[index2] = temp
-#     set_at(index1, get_at(index2))
-#     set_at(index2, temp)
 def binary_length(array: list[Any]) -> int:
     """
     Get the size of an array with the restriction of using len()
@@ -463,59 +386,3 @@ def binary_length(array: list[Any]) -> int:
             high = mid
 
     return low
-
-
-def heap_sort(arr: list[int]) -> None:
-    """"""
-    last_index = len(arr) - 1
-
-    def holds_heap(index: int) -> None:
-
-        left_index = index * 2 + 1
-        right_index = index * 2 + 2
-
-        # case 1: no children
-        if left_index > last_index:
-            return
-
-        # case 2: only one child
-        if left_index == last_index:
-            max_value = arr[index] if arr[index] >= arr[left_index] else arr[left_index]
-        else:
-            # case 3: has two children
-            if arr[index] >= arr[left_index]:
-                max_value = (
-                    arr[index] if arr[index] >= arr[right_index] else arr[right_index]
-                )
-            else:
-                max_value = (
-                    arr[left_index]
-                    if arr[left_index] >= arr[right_index]
-                    else arr[right_index]
-                )
-
-        # base case: parent is biggest
-        if arr[index] == max_value:
-            return
-
-        # recursion: swap bigger child with parent, then holds the heap
-        if arr[left_index] == max_value:
-            arr[index], arr[left_index] = arr[left_index], arr[index]
-            holds_heap(left_index)
-
-        else:
-            # right one is bigger
-            arr[index], arr[right_index] = arr[right_index], arr[index]
-            holds_heap(right_index)
-
-    # build heap
-    for index in range((len(arr) - 2) // 2, -1, -1):
-        holds_heap(index)
-
-    # heap sort
-    while last_index >= 0:
-        arr[0], arr[last_index] = arr[last_index], arr[0]
-        last_index -= 1
-        holds_heap(0)
-
-    # return arr

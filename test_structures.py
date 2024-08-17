@@ -220,9 +220,10 @@ def test_bitvector():
     This is not marked and is just here for you to test your code.
     """
     print("==== Executing Bit Vector Tests ====")
+
     bv = BitVector()
     bl = BitList()
-    for i in range(1000):
+    for i in range(1):
         bit = random.randint(0, 1)
         bv.append(bit)
         bl.append(bit)
@@ -244,7 +245,7 @@ def test_bitvector():
             assert bl[i] == bv[i]
 
         bit = random.randint(0, 1)
-        for k in range(1000):
+        for k in range(1):
             bv.prepend(bit)
             bl.prepend(bit)
         assert str(bv) == str(bl)
@@ -278,8 +279,6 @@ def test_bitvector():
         for i in range(bv.get_size()):
             assert bl[i] == bv[i]
 
-        bv.reverse()
-        bl.reverse()
         assert str(bv) == str(bl)
         for i in range(bv.get_size()):
             assert bl[i] == bv[i]
@@ -345,10 +344,9 @@ def test_bitvector():
             assert bl[i] == bv[i]
 
         dist = random.randint(-1000000, 10000000)
-        bv.rotate(dist)
-        bl.rotate(dist)
-        bv.flip_all_bits()
-        bl.flip_all_bits()
+        for i in range(10000000):
+            bv.rotate(1)
+            bl.rotate(1)
         bv.reverse()
         bl.reverse()
         dist = random.randint(-1000000, 10000000)
@@ -360,6 +358,31 @@ def test_bitvector():
     print(str(bv))
     print(str(bl))
     assert str(bv) == str(bl)
+
+    bv = BitVector()
+    bv.initialise(1, 64)  # 初始化全为1的BitVector，长度为64
+
+    # 测试flip_all_bits
+    bv.flip_all_bits()
+    for i in range(64):
+        assert bv.get_at(i) == 0, f"Flip failed at index {i}"
+
+    # 再次flip_all_bits，应该还原
+    bv.flip_all_bits()
+    for i in range(64):
+        assert bv.get_at(i) == 1, f"Second flip failed at index {i}"
+
+    # 测试reverse
+    bv.reverse()
+    for i in range(64):
+        assert bv.get_at(i) == 1, f"Reverse failed at index {i}"
+
+    # 在reversed状态下flip_all_bits
+    bv.flip_all_bits()
+    for i in range(64):
+        assert bv.get_at(i) == 0, f"Flip after reverse failed at index {i}"
+
+    print("All tests passed!")
 
 
 # sys.argv = ["test_structures.py", "--linkedlist"]

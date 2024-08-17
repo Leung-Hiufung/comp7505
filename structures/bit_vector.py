@@ -8,8 +8,6 @@ from typing import Any
 
 from structures.dynamic_array import DynamicArray
 
-import math
-
 
 class BitVector:
     """
@@ -73,7 +71,6 @@ class BitVector:
 
         if self._data.get_size() > 2:
             # Add bits in the middle elements
-
             for i in range(1, self._data.get_size() - 1):
                 if self._is_flipped:
                     element = self._data.get_at(i) ^ self.FLIP_MASK
@@ -109,12 +106,6 @@ class BitVector:
             return index if not self._is_reversed else self._size - 1 - index
         else:
             return None
-        # if -self._size <= index < 0:
-        #     return self._size + index
-        # elif 0 <= index < self._size:
-        #     return index
-        # else:
-        #     return None
 
     def get_at(self, index: int) -> int | None:
         """
@@ -122,24 +113,20 @@ class BitVector:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-
-        # real_index = self._get_real_index(index)
         if -self._size <= index < 0:
             real_index = self._size + index
         elif 0 <= index < self._size:
             real_index = index
         else:
             return None
-        # if real_index is None:
-        #     return
-        # bit = self.__getitem__(real_index)
         positions = self._get_position_in_array(real_index)
         index_in_array = positions[0]
         index_in_elem = positions[1]
-        bit = f"{self._data.get_at(index_in_array):0{self.BITS_PER_ELEMENT}b}"[
-            index_in_elem
-        ]
-        bit = 1 if bit == "1" else 0
+
+        bit = (
+            self._data.get_at(index_in_array)
+            >> (self.BITS_PER_ELEMENT - 1 - index_in_elem)
+        ) & 1
         bit = bit ^ 1 if self._is_flipped else bit
         return bit
 
@@ -156,9 +143,6 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        # real_index = self._get_real_index(index)
-        # if real_index is None:
-        #     return
         self._set_status(index, 1)
 
     def unset_at(self, index: int) -> None:
@@ -167,9 +151,6 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        # real_index = self._get_real_index(index)
-        # if real_index is None:
-        #     return
         self._set_status(index, 0)
 
     def _set_status(self, index: int, state: int) -> None:
@@ -298,14 +279,13 @@ class BitVector:
         return self._size
 
     def _get_position_in_array(self, index: int) -> list[int]:
-        # `index_in_array` is the element index where the index is in terms of the dynamic array,
-        #  `BITS_PER_ELEMENT` is a unit
-        # `index_in_binary_elem` is the position where the target is in that element
+        """
+        `index_in_array` is the element index where the index is in terms of the dynamic array,
+         `BITS_PER_ELEMENT` is a unit
+        `index_in_binary_elem` is the position where the target is in that element
+        """
 
         # Check which element the bit is in array
-        # index_in_array = (
-        #     index - self._leftmost_index_in_elem + self.BITS_PER_ELEMENT
-        # ) // self.BITS_PER_ELEMENT
         if self._is_reversed:
             index = self._size - index - 1
 
@@ -339,16 +319,8 @@ class BitVector:
             state = state ^ 1 if self._is_flipped else state
             new_element = 0 if state == 0 else 1 << self.BITS_PER_ELEMENT - 1
             self._data.append(new_element)
-            # self._size += 1
         else:
-            ### Process array approach
-            # old_element = self._data.get_at(-1)
-            # mask = 1 << 63 - self._rightmost_index_in_elem
-            # new_element = old_element & ~mask if state == 0 else old_element | mask
-            # self._data.set_at(-1, new_element)
-
-            ### Process bit approach
-
+            # Process bit approach
             self[-1] = state
 
     def _prepend_physically(self, state: int) -> None:
@@ -371,10 +343,6 @@ class BitVector:
             new_element = 0 if state == 0 else 1
             self._data.prepend(new_element)
         else:
-            # old_element = self._data.get_at(0)
-            # mask = 1 << 63 - self._leftmost_index_in_elem
-            # new_element = old_element & ~mask if state == 0 else old_element | mask
-            # self._data.set_at(0, new_element)
             self[0] = state
 
     def _pop_from_logical_left(self) -> int:
@@ -393,6 +361,8 @@ class BitVector:
         """
         Pop the bit from the physical left, and return this bit
         """
+        if self._size == 0:
+            return
         bit = self[0 if not self._is_reversed else -1]
         self[0] = 0 if not self._is_flipped else 1
         self._size -= 1
@@ -412,6 +382,8 @@ class BitVector:
         """
         Pop the bit from the physical left, and return this bit
         """
+        if self._size == 0:
+            return
         bit = self[-1 if not self._is_reversed else 0]
         self[-1] = 0 if not self._is_flipped else 1
         self._size -= 1
@@ -430,8 +402,6 @@ class BitVector:
     def initialise(self, state: int, amount: int) -> None:
         """
         Initialise a bitvector with a given amount of states.
-        Premise:
-
         """
         amount_elements = amount // self.BITS_PER_ELEMENT
         rest_amount = amount % self.BITS_PER_ELEMENT

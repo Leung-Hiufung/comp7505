@@ -35,10 +35,6 @@ class DynamicArray:
         # Should be extended
         if self._size >= self._capacity / 2:
             new_capacity = self._capacity * 2
-        # Should be collapsed
-        # elif self._size < self._capacity // 4:
-        #     new_capacity = self._capacity // 2
-        # No size adjusted, redistribute element
         elif self._zero_index <= 0 or self._zero_index >= self._size:
             new_capacity = self._capacity
         else:
@@ -54,10 +50,8 @@ class DynamicArray:
 
     def _get_real_index(self, index: int) -> int | None:
         if 0 <= index < self._size:
-            # self._set_at_no_bound(index, element)
             index = index
         elif -self._size <= index < 0:
-            # return self._set_at_no_bound(self._size + index, element)
             index = self._size + index
         else:
             return None
@@ -80,32 +74,12 @@ class DynamicArray:
             return
         else:
             return self._array[real_index]
-        # try:
-        #     return self._array[real_index]
-        # except IndexError:
-        #     return None
-
-        # if 0 <= index < self._size:
-        #     return self.__getitem__(index)
-        # elif -self._size <= index < 0:
-        #     return self.__getitem__(self._size + index)
-        # else:
-        #     return None
 
     def __getitem__(self, index: int) -> Any | None:
         """
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        # real_index = (
-        #     self._zero_index + self._size - index - 1
-        #     if self._is_reversed
-        #     else index + self._zero_index
-        # )
-        # try:
-        #     return self._array[real_index]
-        # except IndexError:
-        #     return None
         return self.get_at(index)
 
     def set_at(self, index: int, element: Any) -> None:
@@ -118,8 +92,9 @@ class DynamicArray:
         if real_index is None:
             return
         else:
+            self._array[real_index] = element
             try:
-                self._array[real_index] = element
+                pass
             except IndexError:
                 pass
 
@@ -129,13 +104,6 @@ class DynamicArray:
         Allows to use square brackets to index elements.
         """
         self.set_at(index, element)
-
-    # def _set_at_no_bound(self, index: int, element: Any) -> None:
-    #     if self._is_reversed:
-    #         real_index = self._zero_index + self._size - index - 1
-    #     else:
-    #         real_index = index + self._zero_index
-    #     self._array[real_index] = element
 
     def append(self, element: Any) -> None:
         """
@@ -149,7 +117,6 @@ class DynamicArray:
 
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
-        # self._set_at_no_bound(self._size, element)
 
         if self._is_reversed:
             self._zero_index -= 1
@@ -167,7 +134,6 @@ class DynamicArray:
         self._size += 1
         if self._size + self._zero_index >= self._capacity or self._zero_index == 0:
             self.__resize()
-        # self._set_at_no_bound(-1, element)
 
         if not self._is_reversed:
             self._zero_index -= 1
@@ -202,8 +168,6 @@ class DynamicArray:
         if self._size == 0:
             self._zero_index = None
 
-        # self.__resize()
-
     def remove_at(self, index: int) -> Any | None:
         """
         Remove the element at the given index from the array and return the removed element.
@@ -231,29 +195,7 @@ class DynamicArray:
         if self._size == 0:
             self._zero_index = None
 
-        # self.__resize()
         return element
-
-    # def _pop_from_front(self) -> None:
-    #     """
-    #     Pop the first element. O(1)
-    #     Before:
-    #         self._size > 0
-    #     """
-    #     self.set_at(0, None)
-    #     self._size -= 1
-    #     self._zero_index = None if self.is_empty() else self._zero_index + 1
-
-    # def _pop_from_back(self) -> None:
-    #     """
-    #     Pop the back element. O(1)
-    #     Before:
-    #         self._size > 0
-    #     """
-    #     self.set_at(-1, None)
-    #     self._size -= 1
-    #     if self.is_empty():
-    #         self._zero_index = None
 
     def is_empty(self) -> bool:
         """
@@ -387,9 +329,15 @@ class DynamicArray:
         self[index2] = temp
 
     def get_physical_array(self) -> list[Any]:
+        """
+        Return the physical array that stores the dynamic array.
+        """
         return self._array
 
     def initialise(self, number: Any, amount: int) -> None:
+        """
+        Initialise the dynamic array with the size of `amount` and fill with `number`
+        """
         self._array = [number] * amount
         self._capacity = amount
         self._size = amount
@@ -397,6 +345,9 @@ class DynamicArray:
         self._zero_index = 0
 
     def initialise_from_list(self, array: list[Any]) -> None:
+        """
+        Initialise the dynamic array with the given python list
+        """
         size = binary_length(array)
         self._array = array
         self._capacity = size
@@ -405,6 +356,9 @@ class DynamicArray:
         self._zero_index = 0
 
     def to_python_list(self) -> list[Any]:
+        """
+        Return a python list that contains all the elements in the dynamic array
+        """
         python_list = [None] * self._size
         for i in range(self._size):
             python_list[i] = self[i]
