@@ -1,3 +1,6 @@
 _MACOSX/
 .DS_Store
 __pycache__/
+structures/bit_list.py
+malloclabs/dna.txt
+malloclabs/kmers.txt
