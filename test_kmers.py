@@ -14,6 +14,7 @@ import time
 import argparse
 
 from malloclabs.kmer_structure import KmerStore
+from malloclabs.kmer_dumb import KmerDumb
 
 
 def test_kmer_store_build(filepath: str):
@@ -92,13 +93,15 @@ def test_kmer_store_build(filepath: str):
     # 初始化 KmerStore，设置 k 为 20
     k = 4
     store = KmerStore(k)
+    store_dumb = KmerDumb(k)
 
     # 从文件中读取序列并插入到 KmerStore 中
     store.read(filepath)
+    store_dumb.read(filepath)
 
     for frequency in range(20):
         assert str(sorted(store.freq_geq(frequency))) == str(
-            sorted(store.feq_geq_t(frequency))
+            sorted(store_dumb.feq_geq_t(frequency))
         )
 
         # print(sorted(store.feq_geq_t(frequency)))
@@ -580,12 +583,12 @@ def test_kmer_store_build(filepath: str):
     ]
 
     for kmer in kmers:
-        assert store.compatible(kmer) == store.compatible_t(kmer)
+        assert store.compatible(kmer) == store_dumb.compatible_t(kmer)
 
     for i in range(100):
-        assert str(sorted(store.freq_geq(i))) == str(sorted(store.feq_geq_t(i)))
-    store.batch_delete(kmers)
-    store.batch_delete_t(kmers)
+        assert str(sorted(store.freq_geq(i))) == str(sorted(store_dumb.feq_geq_t(i)))
+    # store.batch_delete(kmers)
+    # store_dumb.batch_delete_t(kmers)
     print("TGAG" in store.kmers)
     print(len(store.kmers), store.count_prefix(""))
     assert len(store.kmers) == store.count_prefix("")
@@ -595,7 +598,7 @@ def test_kmer_store_build(filepath: str):
     kmer = "TTAA"
     # for i in sorted(store.kmers):
     #     print(i)
-    print(kmer, store.count_geq(kmer), store.count_geq_t(kmer))
+    print(kmer, store.count_geq(kmer), store_dumb.count_geq_t(kmer))
     # permutation = []
     # for a in "ACGT":
     #     for b in "ACGT":

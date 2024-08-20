@@ -4,3 +4,4 @@ __pycache__/
 structures/bit_list.py
 malloclabs/dna.txt
 malloclabs/kmers.txt
+malloclabs/kmer_dumb.py

@@ -58,9 +58,59 @@ class KmerStore:
         Given a list of k-mers, insert them (maintaining
         duplicates) in O(n) time.
         """
+        length = len(kmers)
+        middle = length // 2
+        # Sort two part seperately, make it faster.
+        quick_sort(kmers, 0, middle)
+        quick_sort(kmers, middle, length)
 
-        for kmer in kmers:
-            self._trie.insert(kmer)
+        left = middle - 1
+        right = length - 1
+        left_end = -1
+        right_end = middle - 1
+        has_picked = 0
+        occurance = 1
+
+        # Always pick the biggest kmer, like the final merge step in the merge sort
+        # left/right == left/right_end: no non-added element in the left/right,
+        while left > left_end or right > right_end:
+            # Two sides has kmers
+            if left > left_end and right > right_end:
+                if kmers[left] > kmers[right]:
+                    picked = kmers[left]
+                    left -= 1
+                else:
+                    picked = kmers[right]
+                    right -= 1
+            # Only left side has element
+            elif left > left_end and right == right_end:
+                picked = kmers[left]
+                left -= 1
+            # Only right side has element
+            else:
+                picked = kmers[right]
+                right -= 1
+
+            has_picked += 1
+
+            if 1 < has_picked < length:
+                if last_picked == picked:
+                    occurance += 1
+                else:
+                    self._trie.insert(last_picked, occurance)
+                    occurance = 1
+            elif has_picked == length:
+                if last_picked == picked:
+                    occurance += 1
+                    self._trie.insert(picked, occurance)
+                else:
+                    self._trie.insert(last_picked, occurance)
+                    self._trie.insert(picked, 1)
+
+            last_picked = picked
+
+        # for kmer in kmers:
+        #     self._trie.insert(kmer)
 
     def batch_delete(self, kmers: list[str]) -> None:
         """
@@ -310,12 +360,12 @@ class Trie:
             parent = node
         return parent._occurance
 
-    def insert(self, kmer: str) -> None:
+    def insert(self, kmer: str, occurance: int = 1) -> None:
         """
         Insert `kmer` to the trie. Allow duplication.
         """
         node = self._root
-        node._occurance += 1
+        node._occurance += occurance
         for index, nucleotide in enumerate(kmer):
             code = self._nucleotide_hash(nucleotide)
             if not node._child[code]:
@@ -325,7 +375,7 @@ class Trie:
             else:
                 child = node._child[code]
             node = child
-            node._occurance += 1
+            node._occurance += occurance
 
     def delete(self, kmer: str) -> None:
         """Delete the given kmer from the trie. Delete all duplicate kmers."""
@@ -385,3 +435,27 @@ def binary_length(array: list[Any]) -> int:
             high = mid
 
     return low
+
+
+def quick_sort(array: list[str], low: int, high: int) -> None:
+    """
+    A Quick Sort helper, recursion function.
+    Parameters:
+        low: The start index in the sorting interval, inclusive. (Logically, use get_at())
+        high: The end index in the sorting interval, exclusive. (Logically, use get_at())
+    """
+    pivot = high - 1
+    # Base case:
+    if low >= high:
+        return
+    # Comparison. Let all bigger number move to pivot's right.
+    i = low
+    while i < pivot:
+        while array[i] > array[pivot]:
+            array[i], array[pivot - 1] = array[pivot - 1], array[i]
+            array[pivot - 1], array[pivot] = array[pivot], array[pivot - 1]
+            pivot -= 1
+        i += 1
+    # Recursion. Left part of pivot, and then the right part.
+    quick_sort(array, low, pivot)
+    quick_sort(array, pivot + 1, high)
