@@ -357,32 +357,3 @@ def quick_sort(array: list[int], low: int, high: int) -> None:
     # Recursion. Left part of pivot, and then the right part.
     quick_sort(array, low, pivot)
     quick_sort(array, pivot + 1, high)
-
-
-def binary_length(array: list[Any]) -> int:
-    """
-    Get the size of an array with the restriction of using len()
-    Using binary search to find the final index of array.
-    Inspiration from Tut W3 Q4.
-    """
-    # Exponential search to find upper limit
-    low = 0
-    high = 1
-    # Double `high` until IndexError occurs
-    while True:
-        try:
-            _ = array[high]
-            high *= 2
-        except IndexError:
-            break
-
-    # Binary search between low and high
-    while low < high:
-        mid = (low + high) // 2
-        try:
-            _ = array[mid]
-            low = mid + 1
-        except IndexError:
-            high = mid
-
-    return low

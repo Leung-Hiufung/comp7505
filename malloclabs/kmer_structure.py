@@ -246,7 +246,6 @@ class TrieNode:
         """
         result = " " * (level * 2) + f"{self._nucleotide}({self._occurance})\n"
         for child in self._child:
-            # child = self.get_child(nucleotide)
             if child is not None:
                 result += child.to_string(level + 1)
         return result
@@ -266,9 +265,6 @@ class TrieNode:
         if self._child[code] is None:
             self._child[code] = node
             node.set_parent(self)
-        # else:
-        #     self._occurance += 1
-        #     node.increase_occurance()
 
     def get_child(self, code: int = -1) -> TrieNode | list[TrieNode]:
         """
