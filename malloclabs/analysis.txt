@@ -38,5 +38,5 @@ A: O(1).
 How to solve?
     First I get the last two nucleotides of the given kmer and use `if` statement to get their complement nucleotides (notated as `A`, `B`).
     Two nucleotides and their corresponding four `if` statement (A, C, G, or T?) indicates eight "choose" operations, which can be regarded as constant time.
-    Use the trie, get the root's child `A`, and `A`'s child `B`, return `B`'s `occurance`, the depth of `B` is always 2, which can be regarded as constant time.
+    Use the trie, get the root's child `A`, and `A`'s child `B`, return `B`'s `occurance`, the depth of `B` is always 2, which can be regarded as constant time. If not exist, return 0.
 ---
