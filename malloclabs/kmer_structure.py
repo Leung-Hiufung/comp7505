@@ -131,17 +131,17 @@ class KmerStore:
         while stack:
             popped = stack.pop()
             node = popped[0]
-            kmer_list = popped[1]
+            kmer = popped[1]
 
             if node._depth == self._k:
                 if node._occurance >= m:
-                    array.append("".join(kmer_list))
+                    array.append(kmer)
                 continue
 
             for i in range(3, -1, -1):
                 child = node._child[i]
                 if child is not None and child._occurance >= m:
-                    stack.append([child, kmer_list + [child._nucleotide]])
+                    stack.append([child, kmer + child._nucleotide])
         return array
 
     def count_prefix(self, sequence: str = "") -> int:
