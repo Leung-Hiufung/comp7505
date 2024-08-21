@@ -109,9 +109,6 @@ class KmerStore:
 
             last_picked = picked
 
-        # for kmer in kmers:
-        #     self._trie.insert(kmer)
-
     def batch_delete(self, kmers: list[str]) -> None:
         """
         Given a list of k-mers, delete the matching ones
@@ -134,17 +131,17 @@ class KmerStore:
         while stack:
             popped = stack.pop()
             node = popped[0]
-            kmer = popped[1]
+            kmer_list = popped[1]
 
             if node._depth == self._k:
                 if node._occurance >= m:
-                    array.append(kmer)
+                    array.append("".join(kmer_list))
                 continue
 
             for i in range(3, -1, -1):
                 child = node._child[i]
                 if child is not None and child._occurance >= m:
-                    stack.append([child, kmer + child._nucleotide])
+                    stack.append([child, kmer_list + [child._nucleotide]])
         return array
 
     def count_prefix(self, sequence: str = "") -> int:
