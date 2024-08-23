@@ -9,7 +9,7 @@ from typing import Any
 
 class DynamicArray:
     def __init__(self) -> None:
-        self._capacity = 2
+        self._capacity = 1024
         self._array = [None] * self._capacity
         self._size = 0
         self._is_reversed = False
@@ -111,7 +111,7 @@ class DynamicArray:
         Time complexity for full marks: O(1*) (* means amortized)
         """
         if self._size == 0:
-            self._zero_index = 1
+            self._zero_index = self._capacity // 2
 
         self._size += 1
 

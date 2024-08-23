@@ -113,11 +113,14 @@ class BitVector:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if -self._size <= index < 0:
-            real_index = self._size + index
-        elif 0 <= index < self._size:
-            real_index = index
-        else:
+        # if -self._size <= index < 0:
+        #     real_index = self._size + index
+        # elif 0 <= index < self._size:
+        #     real_index = index
+        # else:
+        #     return None
+        real_index = self._get_real_index(index)
+        if real_index is None:
             return None
         positions = self._get_position_in_array(real_index)
         index_in_array = positions[0]
@@ -286,8 +289,8 @@ class BitVector:
         """
 
         # Check which element the bit is in array
-        if self._is_reversed:
-            index = self._size - index - 1
+        # if self._is_reversed:
+        #     index = self._size - index - 1
 
         index_in_array = index // self.BITS_PER_ELEMENT
 
@@ -321,7 +324,10 @@ class BitVector:
             self._data.append(new_element)
         else:
             # Process bit approach
-            self[-1] = state
+            if self._is_reversed:
+                self[0] = state
+            else:
+                self[-1] = state
 
     def _prepend_physically(self, state: int) -> None:
         """
@@ -343,7 +349,10 @@ class BitVector:
             new_element = 0 if state == 0 else 1
             self._data.prepend(new_element)
         else:
-            self[0] = state
+            if self._is_reversed:
+                self[-1] = state
+            else:
+                self[0] = state
 
     def _pop_from_logical_left(self) -> int:
         if self._is_reversed:
