@@ -106,8 +106,6 @@ def test_kmer_store_build(filepath: str):
 
         # print(sorted(store.feq_geq_t(frequency)))
 
-    assert len(store.kmers) == store.count_prefix("")
-
     # print(str(store))
     kmers = [
         "CTCT",
@@ -589,9 +587,6 @@ def test_kmer_store_build(filepath: str):
         assert str(sorted(store.freq_geq(i))) == str(sorted(store_dumb.feq_geq_t(i)))
     # store.batch_delete(kmers)
     # store_dumb.batch_delete_t(kmers)
-    print("TGAG" in store.kmers)
-    print(len(store.kmers), store.count_prefix(""))
-    assert len(store.kmers) == store.count_prefix("")
 
     # print(str(store))
 

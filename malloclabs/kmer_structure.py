@@ -119,11 +119,12 @@ class KmerStore:
         root = self._trie._root
         array = []
         # Use a simulated call stack
-        stack = [[root, ""]]
-        while stack:
-            popped = stack.pop()
-            node = popped[0]
-            kmer = popped[1]
+        stack = [None] * (4 * self._k)
+        stack_top = 1
+        stack[0] = [root, ""]
+        while stack_top > 0:
+            stack_top -= 1
+            node, kmer = stack[stack_top]
 
             if node._depth == self._k:
                 if node._occurance >= m:
@@ -133,7 +134,8 @@ class KmerStore:
             for i in range(3, -1, -1):
                 child = node._child[i]
                 if child is not None and child._occurance >= m:
-                    stack.append([child, kmer + child._nucleotide])
+                    stack[stack_top] = [child, kmer + child._nucleotide]
+                    stack_top += 1
         return array
 
     def count_prefix(self, sequence: str = "") -> int:
