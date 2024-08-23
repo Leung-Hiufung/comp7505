@@ -17,7 +17,7 @@ problems. Or maybe not.
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
 
-# from structures.linked_list import DoublyLinkedList, Node
+from structures.linked_list import DoublyLinkedList, Node
 
 
 class KmerStore:
@@ -51,7 +51,6 @@ class KmerStore:
             for i in range(len(array[0]) - self._k + 1):
                 kmers.append(line[i : i + self._k])
         self.batch_insert(kmers)
-        self.kmers = kmers
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
@@ -59,6 +58,11 @@ class KmerStore:
         duplicates) in O(n) time.
         """
         length = len(kmers)
+
+        # No kmer to insert
+        if length == 0:
+            return
+
         middle = length // 2
         # Sort two part seperately, make it faster.
         quick_sort(kmers, 0, middle)
@@ -66,48 +70,36 @@ class KmerStore:
 
         left = middle - 1
         right = length - 1
-        left_end = -1
-        right_end = middle - 1
         has_picked = 0
         occurance = 1
+        last_picked = ""
 
         # Always pick the biggest kmer, like the final merge step in the merge sort
         # left/right == left/right_end: no non-added element in the left/right,
-        while left > left_end or right > right_end:
+        while left >= 0 or right >= middle:
             # Two sides has kmers
-            if left > left_end and right > right_end:
-                if kmers[left] > kmers[right]:
-                    picked = kmers[left]
-                    left -= 1
-                else:
-                    picked = kmers[right]
-                    right -= 1
-            # Only left side has element
-            elif left > left_end and right == right_end:
-                picked = kmers[left]
-                left -= 1
-            # Only right side has element
-            else:
+            if right >= middle and (left < 0 or kmers[right] >= kmers[left]):
                 picked = kmers[right]
                 right -= 1
+            else:
+                picked = kmers[left]
+                left -= 1
 
             has_picked += 1
 
-            if 1 < has_picked < length:
-                if last_picked == picked:
-                    occurance += 1
-                else:
-                    self._trie.insert(last_picked, occurance)
-                    occurance = 1
-            elif has_picked == length:
-                if last_picked == picked:
-                    occurance += 1
-                    self._trie.insert(picked, occurance)
-                else:
-                    self._trie.insert(last_picked, occurance)
-                    self._trie.insert(picked, 1)
+            if has_picked == 1:
+                last_picked = picked
+                continue
 
-            last_picked = picked
+            if picked == last_picked:
+                occurance += 1
+            else:
+                self._trie.insert(last_picked, occurance)
+                last_picked = picked
+                occurance = 1
+
+        # insert the last kmer
+        self._trie.insert(last_picked, occurance)
 
     def batch_delete(self, kmers: list[str]) -> None:
         """

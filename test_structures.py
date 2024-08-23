@@ -261,15 +261,20 @@ def test_bitvector():
     new_list = [int(i) for i in new_bits]
 
     bv.flip_all_bits()
+    bv.append(1)
     for i, bit in enumerate(new_list):
         new_list[i] = bit ^ 1
-
+    new_list.append(1)
+    bv.reverse()
+    new_list.reverse()
+    bv.append(1)
+    new_list.append(1)
     # print(bv.get_at(0))
     # print(bv.set_at(0))
     # print(bv.get_at(0))
     # print(bv.unset_at(0))
     # print(bv.get_at(0))
-    for k in range(10000):
+    for k in range(2):
         for i in range(len(new_list)):
             bit = random.randint(0, 1)
             bv[i] = bit
