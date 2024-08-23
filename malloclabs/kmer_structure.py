@@ -59,61 +59,55 @@ class KmerStore:
         duplicates) in O(n) time.
         """
         length = len(kmers)
+        middle = length // 2
+        # Sort two part seperately, make it faster.
+        quick_sort(kmers, 0, middle)
+        quick_sort(kmers, middle, length)
 
-        # If amount is small, no need to sort
-        if length < 4**self._k:
-            for kmer in kmers:
-                self._trie.insert(kmer)
-        else:
-            middle = length // 2
-            # Sort two part seperately, make it faster.
-            quick_sort(kmers, 0, middle)
-            quick_sort(kmers, middle, length)
+        left = middle - 1
+        right = length - 1
+        left_end = -1
+        right_end = middle - 1
+        has_picked = 0
+        occurance = 1
 
-            left = middle - 1
-            right = length - 1
-            left_end = -1
-            right_end = middle - 1
-            has_picked = 0
-            occurance = 1
-
-            # Always pick the biggest kmer, like the final merge step in the merge sort
-            # left/right == left/right_end: no non-added element in the left/right,
-            while left > left_end or right > right_end:
-                # Two sides has kmers
-                if left > left_end and right > right_end:
-                    if kmers[left] > kmers[right]:
-                        picked = kmers[left]
-                        left -= 1
-                    else:
-                        picked = kmers[right]
-                        right -= 1
-                # Only left side has element
-                elif left > left_end and right == right_end:
+        # Always pick the biggest kmer, like the final merge step in the merge sort
+        # left/right == left/right_end: no non-added element in the left/right,
+        while left > left_end or right > right_end:
+            # Two sides has kmers
+            if left > left_end and right > right_end:
+                if kmers[left] > kmers[right]:
                     picked = kmers[left]
                     left -= 1
-                # Only right side has element
                 else:
                     picked = kmers[right]
                     right -= 1
+            # Only left side has element
+            elif left > left_end and right == right_end:
+                picked = kmers[left]
+                left -= 1
+            # Only right side has element
+            else:
+                picked = kmers[right]
+                right -= 1
 
-                has_picked += 1
+            has_picked += 1
 
-                if 1 < has_picked < length:
-                    if last_picked == picked:
-                        occurance += 1
-                    else:
-                        self._trie.insert(last_picked, occurance)
-                        occurance = 1
-                elif has_picked == length:
-                    if last_picked == picked:
-                        occurance += 1
-                        self._trie.insert(picked, occurance)
-                    else:
-                        self._trie.insert(last_picked, occurance)
-                        self._trie.insert(picked, 1)
+            if 1 < has_picked < length:
+                if last_picked == picked:
+                    occurance += 1
+                else:
+                    self._trie.insert(last_picked, occurance)
+                    occurance = 1
+            elif has_picked == length:
+                if last_picked == picked:
+                    occurance += 1
+                    self._trie.insert(picked, occurance)
+                else:
+                    self._trie.insert(last_picked, occurance)
+                    self._trie.insert(picked, 1)
 
-                last_picked = picked
+            last_picked = picked
 
     def batch_delete(self, kmers: list[str]) -> None:
         """
