@@ -184,7 +184,8 @@ def test_bloom() -> None:
 
 
 # sys.argv = ["test_structures.py", "--pq"]
-sys.argv = ["test_structures.py", "--map"]
+# sys.argv = ["test_structures.py", "--map"]
+sys.argv = ["test_structures.py", "--bloom"]
 
 # The actual program we're running here
 if __name__ == "__main__":

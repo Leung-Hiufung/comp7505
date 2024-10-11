@@ -41,7 +41,7 @@ class BloomFilter:
 
         # More variables here if you need, of course
         self._size = 0
-        self._capacity = int(-max_keys * math.log(0.01) / (math.log(2) ** 2))
+        self._capacity = int(-max_keys * math.log(0.001) / (math.log(2) ** 8))
         self._data.allocate(self._capacity)
 
     def __str__(self) -> str:
@@ -57,7 +57,7 @@ class BloomFilter:
         Insert a key into the Bloom filter.
         Time complexity for full marks: O(1)
         """
-        index = util.get_hash(key)
+        index = self._get_index_from_hashed_key(key)
         self._data.set_at(index)
         self._size += 1
 
@@ -67,7 +67,7 @@ class BloomFilter:
         over k are set. False otherwise.
         Time complexity for full marks: O(1)
         """
-        index = util.get_hash(key)
+        index = self._get_index_from_hashed_key(key)
         return self._data[index] == 1
 
     def __contains__(self, key: Any) -> bool:
@@ -92,3 +92,8 @@ class BloomFilter:
         Time complexity for full marks: O(1)
         """
         return self._capacity
+    
+    def _get_index_from_hashed_key(self, key: str) -> int:
+        hashed_value = util.get_hash(key)
+        index = hashed_value % self._capacity
+        return index

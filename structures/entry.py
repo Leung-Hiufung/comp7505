@@ -79,7 +79,7 @@ class Entry(Hashable):
         [0, 2^32-1].
         """
         # ### Should support other types
-        return get_hash(self._key)
+        return super().get_hash(self._key)
         # return self._key if isinstance(self._key, int) else hash(self._key)
 
 

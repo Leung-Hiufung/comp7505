@@ -20,7 +20,7 @@ class Hashable(ABC):
         You are free to do anything you find suitable to initialise your
         Hashable class. But maybe you don't need to do anything!
         """
-        pass
+        self._key = None
 
     @abstractmethod
     def get_hash(self) -> int:
@@ -29,7 +29,7 @@ class Hashable(ABC):
         if you wish to hash keys of a specific type. See entry.py for more
         help in this direction, as well as map.py
         """
-        pass
+        return get_hash(self._key)
 
 
 """
