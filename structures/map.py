@@ -118,8 +118,11 @@ class Map:
                 self._arr[index] = linked_list
         else:
             # already linked list
-            old_value = self._arr[index].find_and_return_element(entry).get_value()
-            self._arr[index].insert_to_back(entry)
+            old_value = self._arr[index].find_and_return_element(entry)
+            if old_value is None:
+                self._arr[index].insert_to_back(entry)
+            else:
+                old_value.update_value(entry.get_value())
         return old_value
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -199,7 +202,7 @@ class Map:
         # new array with a prime-number size
         new_array = DynamicArray()
         new_capacity = get_prime_ge(self._capacity * 2)
-        new_array.build_from_list([None] * new_array)
+        new_array.build_from_list([None] * new_capacity)
         self._capacity = new_capacity
         self._arr = new_array
 

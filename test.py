@@ -222,7 +222,7 @@ def recovery_check(in_path: str, compressed_path: str) -> bool:
 
 
 
-sys.argv = ['test.py', 'original_text.txt', 'compressed.txt']
+sys.argv = ['test.py', 'text/pg1184.txt', 'text/pg1184_compressed.txt']
 if __name__ == "__main__":
     compress_file(sys.argv[1], sys.argv[2])
     recovery_check(sys.argv[1], sys.argv[2])

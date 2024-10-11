@@ -59,6 +59,17 @@ def test_pqueue() -> None:
     randnums.remove(min_priority)
     assert pq.get_min_priority() == min(randnums)
 
+    # test heap sort
+    pq = PriorityQueue()
+    random.seed(1)
+    randnums = [random.randint(0, 100000) for _ in range(1000000)]
+    for n in randnums:
+        pq.insert(n, -n)
+    sorted_arr = pq.sort()
+    sorted_randnums = sorted(randnums)
+    assert all([sorted_arr[i].get_key() == sorted_randnums[i] for i in range(len(sorted_arr))])
+
+
 
 def test_map() -> None:
     """
@@ -86,19 +97,16 @@ def test_map() -> None:
     to make sure your data structure works. Make sure you capture all functions
     including any resizing that is done.
     """
-    map = Map()
-    print(map)
-    map["uq"] = "UQ"
-    map["is"] = "IS"
-    map["very"] = "VERY"
-    map["bad"] = "BAD"
-    print(map)
-    assert len(map) == 4
-    assert map["uq"] == "UQ"
-    assert map["UQ"] is None
-    map.remove("uq")
-    assert map["uq"] is None
-    print(map)
+    m = Map()
+    random.seed(1)
+    map_list = []
+    for i in range(1031):
+        rand_str = ''.join([random.choice('printable') for _ in range(10)])
+        m[rand_str] = i
+        map_list.append((rand_str, i))
+    map_list_retrieved = sorted([(i.get_key(), i.get_value()) for i in m.get_items()], key=lambda x: x[1])
+    assert all(map_list[i] == map_list_retrieved[i] for i in range(len(map_list)))
+    
 
 
 def test_bloom() -> None:

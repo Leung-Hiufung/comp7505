@@ -126,9 +126,9 @@ class PriorityQueue:
         if self.is_empty():
             return None
 
-        last = self.get_size()
+        last = self.get_size() - 1
         while last > 0:
-            self._arr[0], self._arr[last - 1] = self._arr[last - 1], self._arr[0]
+            self._arr[0], self._arr[last] = self._arr[last], self._arr[0]
             self.heapify_from_index(0, last)
             last -= 1
 
@@ -148,21 +148,12 @@ class PriorityQueue:
             left = 2 * start + 1
             right = 2 * start + 2
 
-            if (
-                left < self.get_size()
-                and self._arr[smallest].get_key() > self._arr[left].get_key()
-            ):
+            if left < end and self._arr[smallest].get_key() > self._arr[left].get_key():
                 smallest = left
-            if (
-                right < self.get_size()
-                and self._arr[smallest].get_key() > self._arr[right].get_key()
-            ):
+            if right < end and self._arr[smallest].get_key() > self._arr[right].get_key():
                 smallest = right
             if smallest != start:
-                self._arr[start], self._arr[smallest] = (
-                    self._arr[smallest],
-                    self._arr[start],
-                )
+                self._arr[start], self._arr[smallest] = self._arr[smallest], self._arr[start]
                 start = smallest
             else:
                 break
