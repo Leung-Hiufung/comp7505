@@ -403,7 +403,7 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
             oid = offer.get_offer_id()
 
             # 1. 邊數和節點數的合法性檢查
-            if not (n - 1 <= m <= n * (n - 1) // 2):
+            if not (n - 1 <= m <= n * (n - 1)):
                 continue  # 不合法的圖結構
 
             # 2. 直徑的合法性檢查
