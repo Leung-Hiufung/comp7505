@@ -41,6 +41,9 @@ class TreeNode:
         self.data = data
         self.left = None
         self.right = None
+    
+    def __repr__(self) -> str:
+        return f"({self.data}, {self.frequency})"
 
 
 def maybe_maybe_maybe(database: list[str], query: list[str]) -> list[str]:
@@ -138,9 +141,13 @@ def dora(graph: Graph, start: int, symbol_sequence: str,
     visited = BitVector()
     visited.allocate(len(graph._nodes))
     frontier = [start]
+    is_in_frontier = BitVector()
+    is_in_frontier.allocate(len(graph._nodes))
+    is_in_frontier[start] = 1
 
     while len(frontier) > 0:
         node_id = frontier.pop()
+        is_in_frontier[node_id] = 0
         visited[node_id] = 1
         node_char = graph.get_node(node_id).get_data()
         freq_table[node_char] = 1 if freq_table[node_char] is None else freq_table[node_char] + 1
@@ -152,8 +159,9 @@ def dora(graph: Graph, start: int, symbol_sequence: str,
 
             neighbour_id = neighbour.get_id()
             
-            if visited[neighbour_id] == 0:
+            if visited[neighbour_id] == 0 and is_in_frontier[neighbour_id] == 0:
                 frontier.append(neighbour_id)
+                is_in_frontier[neighbour_id] = 1
     
     freq_list = freq_table.get_items()
     heap = PriorityQueue()
@@ -237,6 +245,7 @@ def chain_reaction(compounds: list[Compound]) -> int:
     reachables = [None] * n
     for i in range(n):
         adjacency[i].allocate(n)
+        adjacency[i][i] = 1
 
     # cover_amount stores the amount of compounds covered by a compound (index)
     # Entry: key: amount, value: index (used to record original index after heapify)
@@ -286,9 +295,10 @@ def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bo
 
     # mark as visited
     visited[origin] = True
-    reachable_from_origin = BitVector()
-    reachable_from_origin.allocate(n)
-    reachable_from_origin[origin] = 1
+    # reachable_from_origin = BitVector()
+    # reachable_from_origin.allocate(n)
+    # reachable_from_origin[origin] = 1
+    reachable_from_origin = adjacency[origin]
 
     # 遍歷所有可以被觸發的化合物
     for neighbor in range(n):

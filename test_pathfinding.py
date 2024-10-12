@@ -192,7 +192,7 @@ class MazeDraw:
 
 
 
-sys.argv = ["test_pathfinding.py","--graph", "data-v1/4N/six.graph", "--bfs", "--seed", "4"]#, "--viz"]
+sys.argv = ["test_pathfinding.py","--graph", "data-v1/4N/seven.graph", "--bfs", "--seed", "9"]#, "--viz"]
 # sys.argv = ["test_pathfinding.py","--graph", "data-v1/POSW/two.graph", "--dijkstra", "--seed", "2"]
 
 # The actual program we're running here

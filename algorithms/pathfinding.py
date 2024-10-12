@@ -157,6 +157,7 @@ def frontier_traversal(graph: Graph | LatticeGraph, origin: int, goal: int, type
     parents[origin] = None
     frontier = DynamicArray()
     frontier.append(origin)
+    is_solved = False
 
     while len(frontier) > 0:
         node_id = frontier.remove_at(type)
@@ -164,6 +165,7 @@ def frontier_traversal(graph: Graph | LatticeGraph, origin: int, goal: int, type
         visited_order.append(node_id)
         visited[node_id] = 1
         if node_id == goal:
+            is_solved = True
             break
         
         node_neighbours = graph.get_neighbours(node_id)  # Node, not id
@@ -177,16 +179,17 @@ def frontier_traversal(graph: Graph | LatticeGraph, origin: int, goal: int, type
             if visited[neighbour_id] == 0:
                 frontier.append(neighbour_id)
                 parents[neighbour_id] = node_id
-        
-    # backtrack path
-    path.append(node_id)
-    while node_id is not None:
-        parent = parents[node_id]
-        if parent is None:
-            break
-        path.append(parent)
-        node_id = parent
-    path.reverse()
 
+    if is_solved: 
+      # backtrack path
+      path.append(node_id)
+      while node_id is not None:
+          parent = parents[node_id]
+          if parent is None:
+              break
+          path.append(parent)
+          node_id = parent
+      path.reverse()
+        
     # Return the path and the visited nodes list
     return (path, visited_order)

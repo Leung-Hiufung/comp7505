@@ -12,6 +12,10 @@ import random
 import sys
 import time
 import argparse
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Circle
+
 
 # Import our structures
 from structures.entry import Entry, Compound, Offer
@@ -25,6 +29,50 @@ from structures.bloom_filter import BloomFilter
 from structures.util import Hashable
 
 from algorithms.problems import maybe_maybe_maybe, dora, chain_reaction, labyrinth
+
+
+def plot_compounds(compounds: list[Compound]) -> None:
+    """
+    使用 matplotlib 繪製所有 Compound 物件，顯示完整圓形，每個圓和其 ID 標註為相同顏色，並顯示圓心。
+    """
+    fig, ax = plt.subplots()
+
+    # 使用隨機顏色列表，確保每個 Compound 的圓圈顏色不同
+    colors = ["red", "blue", "green", "purple", "orange", "cyan", "magenta", "brown"]
+
+    for compound in compounds:
+        x, y = compound.get_coordinates()
+        r = compound.get_radius()
+        cid = compound.get_compound_id()
+
+        # 從顏色列表中隨機選擇一個顏色
+        color = random.choice(colors)
+
+        # 使用 Circle 類來繪製完整圓形，設置圓圈顏色
+        circle = Circle((x, y), r, fill=False, edgecolor=color, linewidth=0.5)
+
+        # 將圓形添加到圖形中
+        ax.add_patch(circle)
+
+        # 在圓心位置添加一個小點，顏色與圓圈相同
+        ax.plot(x, y, 'o', color='black', markersize=1)  # 圓心標記
+
+        # 在每個 Compound 的中心標註 ID，顏色與圓圈相同
+        ax.text(x, y, f"{cid}", fontsize=12, ha='center', va='center', color=color)
+
+    # 設置圖形比例和標籤
+    ax.set_aspect('equal')  # 保持比例相同
+    ax.set_xlabel("X-axis")
+    ax.set_ylabel("Y-axis")
+
+    # 設置適當的邊界，避免元素被裁剪
+    ax.set_xlim(min(c.get_coordinates()[0] - c.get_radius() for c in compounds) - 1,
+                max(c.get_coordinates()[0] + c.get_radius() for c in compounds) + 1)
+    ax.set_ylim(min(c.get_coordinates()[1] - c.get_radius() for c in compounds) - 1,
+                max(c.get_coordinates()[1] + c.get_radius() for c in compounds) + 1)
+
+    plt.title("Compound Visualization (Colored Circles with Centers)")
+    plt.show()
 
 def test_maybe():
     """
@@ -68,9 +116,10 @@ def test_dora(graph: Graph):
     # You will also need to set up a sequence to encode. The sequence should
     # be drawn from the symbols in the reachable component of G from the
     # given start node. Look at Figure 8 in the spec.
-    sequence = ""
+    sequence = "EEESSZYCIDDPYOPU"
 
     codeword, codebook = dora(graph, start, sequence)
+    pass
 
 
 def test_chain_reaction():
@@ -83,15 +132,15 @@ def test_chain_reaction():
     # Set up some params
     # x dim is 100
     MIN_X = 0
-    MAX_X = 100
+    MAX_X = 10
     # y dim is 100
     MIN_Y = 0
-    MAX_Y = 100
+    MAX_Y = 10
     # minimum radius is 1, max is 25
     MIN_R = 1
-    MAX_R = 25
+    MAX_R = 3
     # maximum compound count
-    COMPOUNDS = 100
+    COMPOUNDS = 10
 
     compounds = []
     locations = set() # ensure we do not duplicate x/y coords
@@ -112,6 +161,7 @@ def test_chain_reaction():
     #    print(str(compound))
  
     # You can now run and test your algorithm
+    # plot_compounds(compounds)
     trigger_compound  = chain_reaction(compounds)
     print(trigger_compound)
 
@@ -156,8 +206,8 @@ def test_labyrinth():
 
 # sys.argv = ['test_problems.py', '--labyrinth', '--seed', '1']
 # sys.argv = ['test_problems.py', '--dora', 'data-v1/KN/one.graph', '--seed', '1']
-# sys.argv = ['test_problems.py', '--chain', '--seed', '2']
-sys.argv = ['test_problems.py', '--labyrinth', '--seed', '2']
+sys.argv = ['test_problems.py', '--chain', '--seed', '1']
+# sys.argv = ['test_problems.py', '--labyrinth', '--seed', '2']
 
 # The actual program we're running here
 if __name__ == "__main__":
