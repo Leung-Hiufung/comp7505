@@ -138,7 +138,7 @@ def test_chain_reaction():
     MAX_Y = 10
     # minimum radius is 1, max is 25
     MIN_R = 1
-    MAX_R = 3
+    MAX_R = 6
     # maximum compound count
     COMPOUNDS = 10
 
@@ -161,7 +161,7 @@ def test_chain_reaction():
     #    print(str(compound))
  
     # You can now run and test your algorithm
-    # plot_compounds(compounds)
+    plot_compounds(compounds)
     trigger_compound  = chain_reaction(compounds)
     print(trigger_compound)
 

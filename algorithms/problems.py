@@ -261,9 +261,9 @@ def chain_reaction(compounds: list[Compound]) -> int:
             xj, yj = compounds[j].get_coordinates()
             distance = math.sqrt((xi - xj) ** 2 + (yi - yj) ** 2)
 
-            if distance <= compounds[i].get_radius():
+            if distance <= compounds[i].get_radius()+0.0001:
                 adjacency[i][j] = 1
-            if distance <= compounds[j].get_radius():
+            if distance <= compounds[j].get_radius()+0.0001:
                 adjacency[j][i] = 1 
     
     # adj_list = []
@@ -349,51 +349,71 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
 
     # DO THE THING
     if len(offers) > 0:
+        # for offer in offers:
+        #     n = offer.get_num_nodes()
+        #     edge = offer.get_num_edges()
+        #     diameter = offer.get_diameter()
+        #     max_edge, min_edge = n * (n - 1) // 2, n - 1
+        #     max_diameter, min_diameter =  n - 1, 1
+
+        #     # print(f"n = {n}, edge = {edge}, diameter = {diameter}, max_edge = {max_edge}", end="\t")
+            
+        #     # case 1: complete connected graph, one-line graph, lowerbound and upperbound
+        #     if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
+        #         # print("Case 1 not OK")
+        #         continue
+            
+        #     # case 2: one-line graph
+        #     if (edge == min_edge) != (diameter == max_diameter):
+        #         # print("Case 2 not OK")
+        #         continue
+            
+        #     # # case 3: add one edge to one-line graph
+        #     # if (edge == n) != (n // 2 <= diameter <= n - 2):
+        #     #     # print("Case 3 not OK")
+        #     #     continue
+            
+        #     # # case 4: middle cases
+        #     # if (n < edge <= max_edge - n) != (2 < diameter < n // 2):
+        #     #     # print("Case 4 not OK")
+        #     #     continue
+            
+        #     # # case 5: substract 1 ~ n - 1 edge from complete connected graph
+        #     # if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
+        #     #     # print("Case 5 not OK")
+        #     #     continue
+            
+        #     # case 6: complete connected graph
+        #     if (edge == max_edge) != (diameter == min_diameter):
+        #         # print("Case 6 not OK")
+        #         continue
+            
+        #     # print("this one OK")
+
+        #     if offer.get_cost() < best_offer_cost:
+        #         best_offer_cost = offer.get_cost()
+        #         best_offer_id = offer.get_offer_id()
+        #         # print("updated")
+
         for offer in offers:
             n = offer.get_num_nodes()
-            edge = offer.get_num_edges()
-            diameter = offer.get_diameter()
-            max_edge, min_edge = n * (n - 1) // 2, n - 1
-            max_diameter, min_diameter =  n - 1, 1
+            m = offer.get_num_edges()
+            k = offer.get_diameter()
+            cost = offer.get_cost()
+            oid = offer.get_offer_id()
 
-            print(f"n = {n}, edge = {edge}, diameter = {diameter}, max_edge = {max_edge}", end="\t")
-            
-            # case 1: complete connected graph, one-line graph, lowerbound and upperbound
-            if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
-                # print("Case 1 not OK")
-                continue
-            
-            # case 2: one-line graph
-            if (edge == min_edge) != (diameter == max_diameter):
-                # print("Case 2 not OK")
-                continue
-            
-            # # case 3: add one edge to one-line graph
-            # if (edge == n) != (n // 2 <= diameter <= n - 2):
-            #     # print("Case 3 not OK")
-            #     continue
-            
-            # # case 4: middle cases
-            # if (n < edge <= max_edge - n) != (2 < diameter < n // 2):
-            #     # print("Case 4 not OK")
-            #     continue
-            
-            # # case 5: substract 1 ~ n - 1 edge from complete connected graph
-            # if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
-            #     # print("Case 5 not OK")
-            #     continue
-            
-            # case 6: complete connected graph
-            if (edge == max_edge) != (diameter == min_diameter):
-                # print("Case 6 not OK")
-                continue
-            
-            # print("this one OK")
+            # 1. 邊數和節點數的合法性檢查
+            if not (n - 1 <= m <= n * (n - 1) // 2):
+                continue  # 不合法的圖結構
 
-            if offer.get_cost() < best_offer_cost:
-                best_offer_cost = offer.get_cost()
-                best_offer_id = offer.get_offer_id()
-                # print("updated")
+            # 2. 直徑的合法性檢查
+            if not (1 <= k <= n - 1):
+                continue  # 不合法的直徑
+
+            # 3. 找出成本最低且 ID 最小的方案
+            if cost < best_offer_cost or (cost == best_offer_cost and oid < best_offer_id):
+                best_offer_id = oid
+                best_offer_cost = cost
 
     return (best_offer_id, best_offer_cost)
 

@@ -169,7 +169,8 @@ class Map:
             return elem.get_value()
         elif isinstance(elem, DoublyLinkedList):
             entry = elem.find_and_return_element(Entry(key, 0))
-            return entry.get_value()
+            if entry is not None:
+                return entry.get_value()
 
     def __getitem__(self, key: Any) -> Any | None:
         """
