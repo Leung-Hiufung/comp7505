@@ -202,3 +202,9 @@ class BitVector:
         for i in range(self._data.get_size()):
             self._data[i] |= other._data[i]
             
+    def get_size_of_one(self) -> int:
+        count = 0
+        for i in range(self._size):
+            if self[i] == 1:
+                count += 1
+        return count

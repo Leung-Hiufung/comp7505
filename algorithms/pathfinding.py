@@ -160,11 +160,12 @@ def frontier_traversal(graph: Graph | LatticeGraph, origin: int, goal: int, type
 
     while len(frontier) > 0:
         node_id = frontier.remove_at(type)
-        if node_id == goal:
-            break
         
         visited_order.append(node_id)
         visited[node_id] = 1
+        if node_id == goal:
+            break
+        
         node_neighbours = graph.get_neighbours(node_id)  # Node, not id
 
         for neighbour in node_neighbours:

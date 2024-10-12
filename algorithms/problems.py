@@ -140,7 +140,7 @@ def dora(graph: Graph, start: int, symbol_sequence: str,
     frontier = [start]
 
     while len(frontier) > 0:
-        node_id = frontier
+        node_id = frontier.pop()
         visited[node_id] = 1
         node_char = graph.get_node(node_id).get_data()
         freq_table[node_char] = 1 if freq_table[node_char] is None else freq_table[node_char] + 1
@@ -260,18 +260,25 @@ def chain_reaction(compounds: list[Compound]) -> int:
     # adj_list = []
     # for i in range(n):
     #     adj_list[i] = [j for j, k in enumerate(adjacency[i]) if k== 1]
-    maximal_compound = 0
+    
     for i in range(n):
         visited = [False] * n
         reachables[i] = dfs_helper(i, n, adjacency, visited, reachables)
-        if len(reachables[i]) > len(reachables[maximal_compound]):
-            maximal_compound = i
+        # if reachables[i].get_size_of_one() > reachables[maximal_compound].get_size_of_one():
+        #     maximal_compound = i
+
+    maximal_compound = 0
+    maximal_compound_covers = reachables[0].get_size_of_one()
+    for i in range(n):
+        compound_covers = reachables[i].get_size_of_one()
+        if compound_covers > maximal_compound_covers:
+            maximal_compound, maximal_compound_covers = i, compound_covers
 
     return maximal_compound
 
 def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bool], reachables: list[BitVector]) -> BitVector:
     """
-    使用 DFS 計算從 origin 出發可以觸發的所有化合物索引列表
+    
     """
     if reachables[origin] is not None:
         # cache
@@ -279,7 +286,7 @@ def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bo
 
     # mark as visited
     visited[origin] = True
-    reachable_from_origin = BitVector
+    reachable_from_origin = BitVector()
     reachable_from_origin.allocate(n)
     reachable_from_origin[origin] = 1
 
@@ -343,40 +350,40 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
             
             # case 1: complete connected graph, one-line graph, lowerbound and upperbound
             if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
-                print("Case 1 not OK")
+                # print("Case 1 not OK")
                 continue
             
             # case 2: one-line graph
             if (edge == min_edge) != (diameter == max_diameter):
-                print("Case 2 not OK")
+                # print("Case 2 not OK")
                 continue
             
-            # case 3: add one edge to one-line graph
-            if (edge == n) != (n // 2 <= diameter <= n - 2):
-                print("Case 3 not OK")
-                continue
+            # # case 3: add one edge to one-line graph
+            # if (edge == n) != (n // 2 <= diameter <= n - 2):
+            #     # print("Case 3 not OK")
+            #     continue
             
-            # case 4: middle cases
-            if (n < edge <= max_edge - n) != (2 < diameter < n // 2):
-                print("Case 4 not OK")
-                continue
+            # # case 4: middle cases
+            # if (n < edge <= max_edge - n) != (2 < diameter < n // 2):
+            #     # print("Case 4 not OK")
+            #     continue
             
-            # case 5: substract 1 ~ n - 1 edge from complete connected graph
-            if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
-                print("Case 5 not OK")
-                continue
+            # # case 5: substract 1 ~ n - 1 edge from complete connected graph
+            # if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
+            #     # print("Case 5 not OK")
+            #     continue
             
             # case 6: complete connected graph
             if (edge == max_edge) != (diameter == min_diameter):
-                print("Case 6 not OK")
+                # print("Case 6 not OK")
                 continue
             
-            print("this one OK")
+            # print("this one OK")
 
             if offer.get_cost() < best_offer_cost:
                 best_offer_cost = offer.get_cost()
                 best_offer_id = offer.get_offer_id()
-                print("updated")
+                # print("updated")
 
     return (best_offer_id, best_offer_cost)
 
