@@ -284,7 +284,7 @@ def chain_reaction(compounds: list[Compound]) -> int:
     # for i in range(n):
     #     rea_debug_list[i] = [j for j in range(n) if reachables[i][j] == 1]
 
-    # maximal_compound = 0
+    maximal_compound = compounds[0].get_compound_id()
     maximal_compound_covers = reachables[0].get_size_of_one()
     for i in range(n):
         compound_covers = reachables[i].get_size_of_one()
