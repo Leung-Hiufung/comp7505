@@ -270,9 +270,9 @@ def chain_reaction(compounds: list[Compound]) -> int:
     # for i in range(n):
     #     adj_list[i] = [j for j, k in enumerate(adjacency[i]) if k== 1]
 
-    adj_debug_list = [None for _ in range(n)]
-    for i in range(n):
-        adj_debug_list[i] = [j for j in range(n) if adjacency[i][j] == 1]
+    # adj_debug_list = [None for _ in range(n)]
+    # for i in range(n):
+    #     adj_debug_list[i] = [j for j in range(n) if adjacency[i][j] == 1]
     
     for i in range(n):
         visited = [False] * n
@@ -280,16 +280,18 @@ def chain_reaction(compounds: list[Compound]) -> int:
         # if reachables[i].get_size_of_one() > reachables[maximal_compound].get_size_of_one():
         #     maximal_compound = i
 
-    rea_debug_list = [None for _ in range(n)]
-    for i in range(n):
-        rea_debug_list[i] = [j for j in range(n) if reachables[i][j] == 1]
+    # rea_debug_list = [None for _ in range(n)]
+    # for i in range(n):
+    #     rea_debug_list[i] = [j for j in range(n) if reachables[i][j] == 1]
 
     maximal_compound = 0
     maximal_compound_covers = reachables[0].get_size_of_one()
     for i in range(n):
         compound_covers = reachables[i].get_size_of_one()
         if compound_covers > maximal_compound_covers:
-            maximal_compound, maximal_compound_covers = i, compound_covers
+            maximal_compound, maximal_compound_covers = compounds[i].get_compound_id(), compound_covers
+        if compound_covers == maximal_compound_covers and compounds[i].get_compound_id() < maximal_compound:
+            maximal_compound == compounds[i].get_compound_id()
 
     return maximal_compound
 
