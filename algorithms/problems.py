@@ -269,12 +269,20 @@ def chain_reaction(compounds: list[Compound]) -> int:
     # adj_list = []
     # for i in range(n):
     #     adj_list[i] = [j for j, k in enumerate(adjacency[i]) if k== 1]
+
+    adj_debug_list = [None for _ in range(n)]
+    for i in range(n):
+        adj_debug_list[i] = [j for j in range(n) if adjacency[i][j] == 1]
     
     for i in range(n):
         visited = [False] * n
         reachables[i] = dfs_helper(i, n, adjacency, visited, reachables)
         # if reachables[i].get_size_of_one() > reachables[maximal_compound].get_size_of_one():
         #     maximal_compound = i
+
+    rea_debug_list = [None for _ in range(n)]
+    for i in range(n):
+        rea_debug_list[i] = [j for j in range(n) if reachables[i][j] == 1]
 
     maximal_compound = 0
     maximal_compound_covers = reachables[0].get_size_of_one()
@@ -289,9 +297,9 @@ def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bo
     """
     
     """
-    if reachables[origin] is not None:
-        # cache
-        return reachables[origin]
+    # if reachables[origin] is not None:
+    #     # cache
+    #     return reachables[origin]
 
     # mark as visited
     visited[origin] = True

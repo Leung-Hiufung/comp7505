@@ -132,15 +132,15 @@ def test_chain_reaction():
     # Set up some params
     # x dim is 100
     MIN_X = 0
-    MAX_X = 10
+    MAX_X = 20
     # y dim is 100
     MIN_Y = 0
-    MAX_Y = 10
+    MAX_Y = 20
     # minimum radius is 1, max is 25
     MIN_R = 1
-    MAX_R = 6
+    MAX_R = 4
     # maximum compound count
-    COMPOUNDS = 10
+    COMPOUNDS = 25
 
     compounds = []
     locations = set() # ensure we do not duplicate x/y coords
