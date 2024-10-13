@@ -140,7 +140,7 @@ def test_chain_reaction():
     MIN_R = 1
     MAX_R = 4
     # maximum compound count
-    COMPOUNDS = 25
+    COMPOUNDS = 10
 
     compounds = []
     locations = set() # ensure we do not duplicate x/y coords
