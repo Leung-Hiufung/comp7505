@@ -360,6 +360,7 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
 
     # DO THE THING
     if len(offers) > 0:
+        best_offer_id = 0
         for offer in offers:
             n = offer.get_num_nodes()
             edge = offer.get_num_edges()
@@ -398,16 +399,17 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
                 maxi_diameter = math.ceil(n + 1 - ((3 + math.sqrt(9 - 8 * (n - edge))) / 2))
                 if diameter > maxi_diameter:
                     continue
-                
+
             if edge > n:
                 mini_diameter = math.ceil(n / (edge - n)) + 1
                 if diameter < mini_diameter:
                     continue
             
             # print("this one OK")
-
+            
             if offer.get_cost() < best_offer_cost:
                 best_offer_cost = offer.get_cost()
+                best_offer_id = offer.get_offer_id()
             if offer.get_cost() == best_offer_cost and offer.get_offer_id() < best_offer_id:
                 best_offer_id = offer.get_offer_id()
                 # print("updated")
