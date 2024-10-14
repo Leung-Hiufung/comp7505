@@ -276,7 +276,7 @@ def chain_reaction(compounds: list[Compound]) -> int:
     
     for i in range(n):
         visited = [False] * n
-        reachables[i] = dfs_helper(i, n, adjacency, visited, reachables)
+        reachables[i] = dfs_helper(i, n, adjacency, visited, reachables, 1)
         # if reachables[i].get_size_of_one() > reachables[maximal_compound].get_size_of_one():
         #     maximal_compound = i
 
@@ -290,20 +290,20 @@ def chain_reaction(compounds: list[Compound]) -> int:
         compound_covers = reachables[i].get_size_of_one()
         if compound_covers > maximal_compound_covers:
             maximal_compound, maximal_compound_covers = compounds[i].get_compound_id(), compound_covers
-        if compound_covers == maximal_compound_covers and compounds[i].get_compound_id() < maximal_compound:
+        elif compound_covers == maximal_compound_covers and compounds[i].get_compound_id() < maximal_compound:
             maximal_compound = compounds[i].get_compound_id()
 
     return maximal_compound
 
-def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bool], reachables: list[BitVector]) -> BitVector:
+def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bool], reachables: list[BitVector], depth: int) -> BitVector:
     """
     
     """
-    # if reachables[origin] is not None:
-    #     # cache
-    #     return reachables[origin]
+    if depth == 1 and reachables[origin] is not None:
+        # cache
+        return reachables[origin]
 
-    # mark as visited
+    # mark as visiteds
     visited[origin] = True
     # reachable_from_origin = BitVector()
     # reachable_from_origin.allocate(n)
@@ -313,11 +313,12 @@ def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bo
     # 遍歷所有可以被觸發的化合物
     for neighbor in range(n):
         if adjacency[origin][neighbor] == 1 and not visited[neighbor]:
-            neighbor_reachables = dfs_helper(neighbor, n, adjacency, visited, reachables)
+            neighbor_reachables = dfs_helper(neighbor, n, adjacency, visited, reachables, depth + 1)
             reachable_from_origin.or_operation(neighbor_reachables)
 
     # cache
-    reachables[origin] = reachable_from_origin
+    if depth == 1:
+        reachables[origin] = reachable_from_origin
     return reachable_from_origin
 
 def labyrinth(offers: list[Offer]) -> tuple[int, int]:
@@ -359,71 +360,56 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
 
     # DO THE THING
     if len(offers) > 0:
-        # for offer in offers:
-        #     n = offer.get_num_nodes()
-        #     edge = offer.get_num_edges()
-        #     diameter = offer.get_diameter()
-        #     max_edge, min_edge = n * (n - 1) // 2, n - 1
-        #     max_diameter, min_diameter =  n - 1, 1
-
-        #     # print(f"n = {n}, edge = {edge}, diameter = {diameter}, max_edge = {max_edge}", end="\t")
-            
-        #     # case 1: complete connected graph, one-line graph, lowerbound and upperbound
-        #     if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
-        #         # print("Case 1 not OK")
-        #         continue
-            
-        #     # case 2: one-line graph
-        #     if (edge == min_edge) != (diameter == max_diameter):
-        #         # print("Case 2 not OK")
-        #         continue
-            
-        #     # # case 3: add one edge to one-line graph
-        #     # if (edge == n) != (n // 2 <= diameter <= n - 2):
-        #     #     # print("Case 3 not OK")
-        #     #     continue
-            
-        #     # # case 4: middle cases
-        #     # if (n < edge <= max_edge - n) != (2 < diameter < n // 2):
-        #     #     # print("Case 4 not OK")
-        #     #     continue
-            
-        #     # # case 5: substract 1 ~ n - 1 edge from complete connected graph
-        #     # if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
-        #     #     # print("Case 5 not OK")
-        #     #     continue
-            
-        #     # case 6: complete connected graph
-        #     if (edge == max_edge) != (diameter == min_diameter):
-        #         # print("Case 6 not OK")
-        #         continue
-            
-        #     # print("this one OK")
-
-        #     if offer.get_cost() < best_offer_cost:
-        #         best_offer_cost = offer.get_cost()
-        #         best_offer_id = offer.get_offer_id()
-        #         # print("updated")
-
         for offer in offers:
             n = offer.get_num_nodes()
-            m = offer.get_num_edges()
-            k = offer.get_diameter()
-            cost = offer.get_cost()
-            oid = offer.get_offer_id()
+            edge = offer.get_num_edges()
+            diameter = offer.get_diameter()
+            max_edge, min_edge = n * (n - 1) // 2, n - 1
+            max_diameter, min_diameter =  n - 1, 1
 
-            # 1. 邊數和節點數的合法性檢查
-            if not (n - 1 <= m <= n * (n - 1)):
-                continue  # 不合法的圖結構
+            # case 1: complete connected graph, one-line graph, lowerbound and upperbound
+            if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
+                # print("Case 1 not OK")
+                continue
+            
+            # case 2: one-line graph
+            if diameter == max_diameter and edge != min_edge:
+                # print("Case 2 not OK")
+                continue
+            
+            # case 3: add one edge to one-line graph
+            if (edge == n) != (n // 2 <= diameter <= n - 2):
+                # print("Case 3 not OK")
+                continue
+            
+            
+            # case 5: substract 1 ~ n - 1 edge from complete connected graph
+            if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
+                # print("Case 5 not OK")
+                continue
+            
+            # case 6: complete connected graph
+            if (edge == max_edge) != (diameter == min_diameter):
+                # print("Case 6 not OK")
+                continue
 
-            # 2. 直徑的合法性檢查
-            if not (1 <= k <= n - 1):
-                continue  # 不合法的直徑
+            # case 7: max diameter
+            if min_edge <= edge < max_edge - n + 1:
+                maxi_diameter = math.ceil(n + 1 - ((3 + math.sqrt(9 - 8 * (n - edge))) / 2))
+                if diameter > maxi_diameter:
+                    continue
+                
+                mini_diameter = math.ceil(n / (edge - n)) + 1
+                if diameter < mini_diameter:
+                    continue
+            
+            # print("this one OK")
 
-            # 3. 找出成本最低且 ID 最小的方案
-            if cost < best_offer_cost or (cost == best_offer_cost and oid < best_offer_id):
-                best_offer_id = oid
-                best_offer_cost = cost
+            if offer.get_cost() < best_offer_cost:
+                best_offer_cost = offer.get_cost()
+                best_offer_id = offer.get_offer_id()
+                # print("updated")
+
 
     return (best_offer_id, best_offer_cost)
 
