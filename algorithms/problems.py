@@ -247,13 +247,6 @@ def chain_reaction(compounds: list[Compound]) -> int:
         adjacency[i].allocate(n)
         adjacency[i][i] = 1
 
-    # cover_amount stores the amount of compounds covered by a compound (index)
-    # Entry: key: amount, value: index (used to record original index after heapify)
-
-    # result stores calculated result for each index.
-    # The value is the number of compound that a compound can trigger in a chain reaction
-    result = [1] * n
-    
     # calculate the distance from one to others, update `adjacency`
     for i in range(n):
         for j in range(i + 1, n):
@@ -266,23 +259,10 @@ def chain_reaction(compounds: list[Compound]) -> int:
             if distance <= compounds[j].get_radius()+0.0001:
                 adjacency[j][i] = 1 
     
-    # adj_list = []
-    # for i in range(n):
-    #     adj_list[i] = [j for j, k in enumerate(adjacency[i]) if k== 1]
-
-    # adj_debug_list = [None for _ in range(n)]
-    # for i in range(n):
-    #     adj_debug_list[i] = [j for j in range(n) if adjacency[i][j] == 1]
     
     for i in range(n):
         visited = [False] * n
         reachables[i] = dfs_helper(i, n, adjacency, visited, reachables, 1)
-        # if reachables[i].get_size_of_one() > reachables[maximal_compound].get_size_of_one():
-        #     maximal_compound = i
-
-    # rea_debug_list = [None for _ in range(n)]
-    # for i in range(n):
-    #     rea_debug_list[i] = [j for j in range(n) if reachables[i][j] == 1]
 
     maximal_compound = compounds[0].get_compound_id()
     maximal_compound_covers = reachables[0].get_size_of_one()
@@ -305,12 +285,9 @@ def dfs_helper(origin: int, n: int, adjacency: list[BitVector], visited: list[bo
 
     # mark as visiteds
     visited[origin] = True
-    # reachable_from_origin = BitVector()
-    # reachable_from_origin.allocate(n)
-    # reachable_from_origin[origin] = 1
     reachable_from_origin = adjacency[origin]
 
-    # 遍歷所有可以被觸發的化合物
+    # iterate all compunds that can be triggered
     for neighbor in range(n):
         if adjacency[origin][neighbor] == 1 and not visited[neighbor]:
             neighbor_reachables = dfs_helper(neighbor, n, adjacency, visited, reachables, depth + 1)

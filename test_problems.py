@@ -37,7 +37,6 @@ def plot_compounds(compounds: list[Compound]) -> None:
     """
     fig, ax = plt.subplots()
 
-    # 使用隨機顏色列表，確保每個 Compound 的圓圈顏色不同
     colors = ["red", "blue", "green", "purple", "orange", "cyan", "magenta", "brown"]
 
     for compound in compounds:
@@ -45,27 +44,20 @@ def plot_compounds(compounds: list[Compound]) -> None:
         r = compound.get_radius()
         cid = compound.get_compound_id()
 
-        # 從顏色列表中隨機選擇一個顏色
         color = random.choice(colors)
 
-        # 使用 Circle 類來繪製完整圓形，設置圓圈顏色
         circle = Circle((x, y), r, fill=False, edgecolor=color, linewidth=0.5)
 
-        # 將圓形添加到圖形中
         ax.add_patch(circle)
 
-        # 在圓心位置添加一個小點，顏色與圓圈相同
         ax.plot(x, y, 'o', color='black', markersize=1)  # 圓心標記
 
-        # 在每個 Compound 的中心標註 ID，顏色與圓圈相同
         ax.text(x, y, f"{cid}", fontsize=12, ha='center', va='center', color=color)
 
-    # 設置圖形比例和標籤
-    ax.set_aspect('equal')  # 保持比例相同
+    ax.set_aspect('equal')
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
 
-    # 設置適當的邊界，避免元素被裁剪
     ax.set_xlim(min(c.get_coordinates()[0] - c.get_radius() for c in compounds) - 1,
                 max(c.get_coordinates()[0] + c.get_radius() for c in compounds) + 1)
     ax.set_ylim(min(c.get_coordinates()[1] - c.get_radius() for c in compounds) - 1,
