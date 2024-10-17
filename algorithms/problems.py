@@ -343,54 +343,19 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
             edge = offer.get_num_edges()
             diameter = offer.get_diameter()
             max_edge, min_edge = n * (n - 1) // 2, n - 1
-            max_diameter, min_diameter =  n - 1, 1
 
-            # case 1: complete connected graph, one-line graph, lowerbound and upperbound
-            if not (min_edge <= edge <= max_edge and min_diameter <= diameter <= max_diameter):
-                # print("Case 1 not OK")
+            if diameter < 1:
                 continue
-            
-            # case 2: one-line graph
-            if diameter == max_diameter and edge != min_edge:
-                # print("Case 2 not OK")
+            if diameter == 1 and edge != max_edge:
                 continue
-            
-            # case 3: add one edge to one-line graph
-            if (edge == n) != (n // 2 <= diameter <= n - 2):
-                # print("Case 3 not OK")
-                continue
-            
-            
-            # case 5: substract 1 ~ n - 1 edge from complete connected graph
-            if (max_edge - n + 1 <= edge <= max_edge - 1) != (diameter == 2):
-                # print("Case 5 not OK")
-                continue
-            
-            # case 6: complete connected graph
-            if (edge == max_edge) != (diameter == min_diameter):
-                # print("Case 6 not OK")
+            if diameter == 2 and edge <= min_edge:
                 continue
 
-            # case 7: max diameter
-            if min_edge <= edge < max_edge - n + 1:
-                maxi_diameter = math.ceil(n + 1 - ((3 + math.sqrt(9 - 8 * (n - edge))) / 2))
-                if diameter > maxi_diameter:
-                    continue
-
-            if edge > n:
-                mini_diameter = math.ceil(n / (edge - n)) + 1
-                if diameter < mini_diameter:
-                    continue
-            
-            # print("this one OK")
-            
             if offer.get_cost() < best_offer_cost:
                 best_offer_cost = offer.get_cost()
                 best_offer_id = offer.get_offer_id()
             if offer.get_cost() == best_offer_cost and offer.get_offer_id() < best_offer_id:
                 best_offer_id = offer.get_offer_id()
-                # print("updated")
-
 
     return (best_offer_id, best_offer_cost)
 

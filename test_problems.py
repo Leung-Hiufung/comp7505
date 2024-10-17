@@ -198,8 +198,8 @@ def test_labyrinth():
 
 # sys.argv = ['test_problems.py', '--labyrinth', '--seed', '1']
 # sys.argv = ['test_problems.py', '--dora', 'data-v1/KN/one.graph', '--seed', '1']
-sys.argv = ['test_problems.py', '--chain', '--seed', '1']
-# sys.argv = ['test_problems.py', '--labyrinth', '--seed', '2']
+# sys.argv = ['test_problems.py', '--chain', '--seed', '1']
+sys.argv = ['test_problems.py', '--labyrinth', '--seed', '2']
 
 # The actual program we're running here
 if __name__ == "__main__":
