@@ -41,7 +41,7 @@ class BloomFilter:
 
         # More variables here if you need, of course
         self._size = 0
-        self._capacity = math.ceil((-max_keys * math.log(0.01) / (math.log(2) ** 32)))
+        self._capacity = math.ceil((-max_keys * math.log(0.01) / (math.log(2) ** 16))) * 2
         self._data.allocate(self._capacity)
 
     def __str__(self) -> str:
