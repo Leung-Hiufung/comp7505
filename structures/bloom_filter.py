@@ -104,7 +104,7 @@ class BloomFilter:
         hash_value = 0
 
         for byte in key_bytes:
-            hash_value = (hash_value * 31 + byte) % (1 << 32)
+            hash_value = (hash_value * 31 + byte)# % (1 << 32)
 
         return hash_value
     
@@ -113,6 +113,6 @@ class BloomFilter:
         hash_value = 0
 
         for byte in key_bytes:
-            hash_value = (hash_value * 43 + byte) % (1 << 32)
+            hash_value = (hash_value * 43 + byte)# % (1 << 32)
 
         return hash_value
