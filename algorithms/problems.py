@@ -344,6 +344,8 @@ def labyrinth(offers: list[Offer]) -> tuple[int, int]:
             diameter = offer.get_diameter()
             max_edge, min_edge = n * (n - 1) // 2, n - 1
 
+            if edge < min_edge or edge > max_edge:
+                continue
             if diameter < 1:
                 continue
             if diameter == 1 and edge != max_edge:
