@@ -96,6 +96,7 @@ class BloomFilter:
     def _get_index_from_hashed_key(self, key: str) -> int:
         hashed_value = self.get_hash1(key)
         hashed_value = self.get_hash2(hashed_value)
+        hashed_value = self.get_hash3(hashed_value)
         index = hashed_value % self._capacity
         return index
     
@@ -104,7 +105,7 @@ class BloomFilter:
         hash_value = 0
 
         for byte in key_bytes:
-            hash_value = (hash_value * 31 + byte)# % (1 << 32)
+            hash_value = (hash_value * 43 + byte)# % (1 << 32)
 
         return hash_value
     
@@ -113,6 +114,15 @@ class BloomFilter:
         hash_value = 0
 
         for byte in key_bytes:
-            hash_value = (hash_value * 43 + byte)# % (1 << 32)
+            hash_value = (hash_value * 37 + byte)# % (1 << 32)
+
+        return hash_value
+    
+    def get_hash3(self, key: Any) -> int:
+        key_bytes = util.object_to_byte_array(key)
+        hash_value = 0
+
+        for byte in key_bytes:
+            hash_value = (hash_value * 31 + byte) % (1 << 32)
 
         return hash_value
