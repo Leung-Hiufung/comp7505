@@ -41,7 +41,7 @@ class BloomFilter:
 
         # More variables here if you need, of course
         self._size = 0
-        self._capacity = math.ceil((-max_keys * math.log(0.01) / (math.log(2) ** 16))) * 2
+        self._capacity = math.ceil((-max_keys * math.log(0.01) / (math.log(2) ** 16))) * 4
         self._data.allocate(self._capacity)
 
     def __str__(self) -> str:
@@ -101,7 +101,7 @@ class BloomFilter:
         index = hashed_value % self._capacity
         return index
     
-    def get_hash4(self, key: Any) -> int:
+    def get_hash3(self, key: Any) -> int:
         key_bytes = util.object_to_byte_array(key)
         hash_value = 0
 
@@ -110,16 +110,16 @@ class BloomFilter:
 
         return hash_value
     
-    def get_hash3(self, key: Any) -> int:
+    def get_hash2(self, key: Any) -> int:
         key_bytes = util.object_to_byte_array(key)
         hash_value = 0
 
         for byte in key_bytes:
-            hash_value = (hash_value * 37 + byte) % (1 << 64)
+            hash_value = (hash_value * 37 + byte)# % (1 << 64)
 
         return hash_value
     
-    def get_hash2(self, key: Any) -> int:
+    def get_hash1(self, key: Any) -> int:
         key_bytes = util.object_to_byte_array(key)
         hash_value = 0
 
